@@ -1,0 +1,28 @@
+# Node modules and build directories
+node_modules/
+build/
+
+# Environment files
+.env
+
+# Python compiled files
+__pycache__/
+*.pyc
+
+# Database files
+db.sqlite3
+
+# Virtual environments
+.venv/
+env/
+
+# Log files
+*.log
+
+# User-uploaded media files
+media/
+
+# IDE and editor directories
+.idea/
+.vscode/
+
