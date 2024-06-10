@@ -36,11 +36,13 @@ const Signup = () => {
                 },
                 body: JSON.stringify(formBody)
             });
-            if (response.ok) {
-                navigate('/');
-            } else {
-                const errorData = await response.json();
-                setError(errorData);
+            if (response.ok) { 
+                // const data = await response.json();
+                if (formData.usertype === 'jobseeker') {
+                    navigate('/jobseeker');
+                } else if (formData.usertype === 'recruiter') {
+                    navigate('/recruiter');
+                }
             }
         } catch (error) {
             setError({ message: error.message });
@@ -91,3 +93,5 @@ const Signup = () => {
 };
 
 export default Signup;
+
+

@@ -13,7 +13,7 @@ const JsLayout = () => {
         <Footer/>
         
         </div>
-    )
+    );
     }
 
-export default JsLayout
+export default JsLayout;

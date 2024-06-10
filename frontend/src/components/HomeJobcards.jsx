@@ -136,7 +136,7 @@ const Jobs = () => {
           <div className="col-md-4 mt-4 mt-sm-0 d-none d-md-block">
             <div className="text-center text-md-end">
               <div className="view-more-container">
-                <a href="#" className="text-primary">View more Jobs</a>
+                <a href="/search" className="text-primary">View more Jobs</a>
               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@ const Jobs = () => {
                     </span>
                   </div>
                   <div className="mt-3">
-                    <a href="#" className="btn btn-primary">View Details</a>
+                    <a href="/viewapply" className="btn btn-primary">View Details & Apply</a>
                   </div>
                 </div>
               </div>
@@ -164,7 +164,7 @@ const Jobs = () => {
 
           <div className="col-12 mt-4 pt-2 d-block d-md-none text-center">
             <div className="view-more-container">
-              <a href="#" className="btn btn-primary">
+              <a href="/search" className="btn btn-primary">
                 View more Jobs
               </a>
             </div>

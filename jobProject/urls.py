@@ -5,6 +5,9 @@ from rest_framework.routers import DefaultRouter
 from jobApp.views import login,RegisterView
 from jobApp.views import usertableViewSet, jobseekerViewSet, recruiterViewSet, jobViewSet, applicationViewSet, companyViewSet,experienceViewSet, educationViewSet
 from jobApp.views import GetUserTypeView
+from jobApp.views import SearchView
+from jobApp.views import JobDetailView
+
 
 router = DefaultRouter()
 router.register(r'usertable', usertableViewSet)
@@ -23,6 +26,8 @@ urlpatterns = [
     path('api/login/', login, name='login'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/get_usertype/', GetUserTypeView.as_view(), name='get_usertype'),
+    path('api/search/', SearchView.as_view(), name='search'),
+    path('viewapply/<int:id>/', JobDetailView.as_view(), name='job-detail'),
 ]
 
 

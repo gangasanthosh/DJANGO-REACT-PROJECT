@@ -11,7 +11,7 @@ const RecLayout = () => {
       <Main/>
       <Footer/>
     </div>
-  )
+  );
 }
 
-export default RecLayout
+export default RecLayout;

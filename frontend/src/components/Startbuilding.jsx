@@ -1,6 +1,6 @@
 import HeroImg from "../assets/images/hero.png";
 
-const Hero = () => {
+const Startbuilding = () => {
   return (
     <div className="container flex mt-6">
       <div className="left w-1/2 text-left pt-9">
@@ -14,7 +14,7 @@ const Hero = () => {
         </p>
         <div className="mt-9 border rounded-full bg-zinc-50 w-[75%] flex justify-between align-middle">
           <input type="text" className="bg-transparent w-4/5 outline-none border-none px-6" placeholder="Search job..." />
-          <button className="rounded-full px-5 py-2 text-white font-bold" style={{ backgroundColor: '8436a8' }}>
+          <button className="rounded-full px-5 py-2 text-black font-bold" style={{ backgroundColor: '8436a8' }}>
             Search
           </button>
         </div>
@@ -26,4 +26,5 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default Startbuilding;
+
