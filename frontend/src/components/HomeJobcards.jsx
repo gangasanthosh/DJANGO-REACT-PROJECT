@@ -8,7 +8,7 @@ const Jobs = () => {
 
   useEffect(() => {
     // Fetch jobs from the API
-    axios.get('http://localhost:8000/api/job/')
+    axios.get('http://localhost:8000/api/job/?max_likes=6')
       .then(response => {
         setJobs(response.data);
       })
@@ -49,22 +49,22 @@ const Jobs = () => {
             letter-spacing: 0.5px;
             font-size: 12px;
           }
-          .btn-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, 
-          .btn-outline-primary.active, .btn-outline-primary.focus, 
+          .btn-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active,
+          .btn-outline-primary.active, .btn-outline-primary.focus,
           .btn-outline-primary:not(:disabled):not(.disabled):active {
             box-shadow: 0 3px 7px rgb(134 54 168/ 50%) !important;
           }
-          .btn-primary, .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, 
-          .btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus, 
-          .btn-outline-primary:not(:disabled):not(.disabled):active, .bg-soft-primary .border, 
-          .alert-primary, .alert-outline-primary, .badge-outline-primary, .nav-pills .nav-link.active, 
-          .pagination .active a, .form-group .form-control:focus, .form-group .form-control.active, 
-          .custom-control-input:checked ~ .custom-control-label:before, 
-          .custom-control-input:focus ~ .custom-control-label::before, .form-control:focus, 
-          .social-icon li a:hover, #topnav .has-submenu.active.active .menu-arrow, 
-          #topnav.scroll .navigation-menu > li:hover > .menu-arrow, #topnav.scroll .navigation-menu > li.active > .menu-arrow, 
-          #topnav .navigation-menu > li:hover > .menu-arrow, .flatpickr-day.selected, 
-          .flatpickr-day.selected:hover, .form-check-input:focus, .form-check-input.form-check-input:checked, 
+          .btn-primary, .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:focus,
+          .btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus,
+          .btn-outline-primary:not(:disabled):not(.disabled):active, .bg-soft-primary .border,
+          .alert-primary, .alert-outline-primary, .badge-outline-primary, .nav-pills .nav-link.active,
+          .pagination .active a, .form-group .form-control:focus, .form-group .form-control.active,
+          .custom-control-input:checked ~ .custom-control-label:before,
+          .custom-control-input:focus ~ .custom-control-label::before, .form-control:focus,
+          .social-icon li a:hover, #topnav .has-submenu.active.active .menu-arrow,
+          #topnav.scroll .navigation-menu > li:hover > .menu-arrow, #topnav.scroll .navigation-menu > li.active > .menu-arrow,
+          #topnav .navigation-menu > li:hover > .menu-arrow, .flatpickr-day.selected,
+          .flatpickr-day.selected:hover, .form-check-input:focus, .form-check-input.form-check-input:checked,
           .container-filter li.active, .container-filter li:hover {
             border-color: #8436a8 !important;
           }
@@ -155,7 +155,7 @@ const Jobs = () => {
                     </span>
                   </div>
                   <div className="mt-3">
-                    <a href="/viewapply" className="btn btn-primary">View Details & Apply</a>
+                    <a href={`/viewapply/${job.id}`} className="btn btn-primary">View Details & Apply</a>
                   </div>
                 </div>
               </div>

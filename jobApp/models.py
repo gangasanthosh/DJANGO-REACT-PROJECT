@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from datetime import date
+
 
 class usertable(models.Model):
 
@@ -25,6 +27,7 @@ class usertable(models.Model):
 class recruiter(models.Model):
     user = models.OneToOneField(usertable, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    lname=models.CharField(max_length=255, null=True)
     contact_no = models.CharField(max_length=20, blank=True, null=True)
     company_name = models.CharField(max_length=255, blank=True, null=True)
     industry = models.CharField(max_length=100, blank=True, null=True)
@@ -36,6 +39,7 @@ class recruiter(models.Model):
 class jobseeker(models.Model):
     user = models.OneToOneField(usertable, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    lname=models.CharField(max_length=255, null=True)
     contact_no = models.CharField(max_length=20, blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     resume_path = models.CharField(max_length=255, blank=True, null=True)
@@ -109,6 +113,7 @@ class job(models.Model):
         ('remote', 'Remote'),
         ('internship', 'Internship'),
         ('bonded', 'Bonded'),
+        ('Wfh','Work-from-Home')
     ]
     recruiter = models.ForeignKey('recruiter', on_delete=models.CASCADE)
     job_title = models.CharField(max_length=255)
@@ -143,8 +148,9 @@ class application(models.Model):
     job = models.ForeignKey(job, on_delete=models.CASCADE)
     job_seeker = models.ForeignKey(jobseeker, on_delete=models.CASCADE)
     resume_path = models.CharField(max_length=255)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    applied_date = models.DateField()
+    app_desc = models.TextField(null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Applied')
+    applied_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.job} - {self.job_seeker}'

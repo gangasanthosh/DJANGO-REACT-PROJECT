@@ -1,0 +1,30 @@
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+form {
+  width: 100%;
+}
+
+.form-group label {
+  font-weight: bold;
+}
+
+textarea {
+  border-radius: 4px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  margin-top: 5%;
+}

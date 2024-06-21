@@ -21,6 +21,24 @@ const Signup = () => {
             [name]: value
         });
     };
+    const validateForm = () => {
+        const { username, email, password, usertype } = formData;
+
+        if (!username || !email || !password || !usertype) {
+            return "All fields are required.";
+        }
+        if (!/^[a-zA-Z]+$/.test(username)) {
+            return "Oops! your first name contains a number";
+        }
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            return "Oops! Enter a valid Email .";
+        }
+        if (password.length < 8) {
+            return "Password should be at least 8 characters long.";
+        }
+        return null;
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,6 +47,12 @@ const Signup = () => {
                 ...formData,
                 "user_auth_type": "username/password"
             }
+            const validationError = validateForm();
+            if (validationError) {
+                setError({ message: validationError });
+                return;
+            }
+
             const response = await fetch('http://127.0.0.1:8000/api/register/', {
                 method: 'POST',
                 headers: {
@@ -36,7 +60,7 @@ const Signup = () => {
                 },
                 body: JSON.stringify(formBody)
             });
-            if (response.ok) { 
+            if (response.ok) {
                 // const data = await response.json();
                 if (formData.usertype === 'jobseeker') {
                     navigate('/jobseeker');
@@ -64,22 +88,55 @@ const Signup = () => {
                 <div className="form-container">
                     <div className="form">
                         <form className="register-form" onSubmit={handleSubmit}>
-                            <input type="text" name="username" placeholder="Name" value={formData.username} onChange={handleChange} required />
-                            <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
-                            <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
-                            <div className="radio-buttons">
+
+                            <input 
+                            type="text" 
+                            name="username" 
+                            placeholder="First Name*" 
+                            value={formData.username} 
+                            onChange={handleChange} 
+                            />
+
+                            <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="Email Address*" 
+                            value={formData.email} 
+                            onChange={handleChange}
+                            />
+                            <input 
+                            type="password" 
+                            name="password" 
+                            placeholder="Password*" 
+                            value={formData.password} 
+                            onChange={handleChange} />
+                            
+                            <div className="role-selection">
                                 <p>Indicate your role:</p>
-                                <div className="radio-option">
-                                    <input type="radio" name="usertype" value="recruiter" id="recruiter" onChange={handleChange} required />
+                                <div className="role-option">
+                                    <input 
+                                    type="radio" 
+                                    name="usertype" 
+                                    value="recruiter" 
+                                    id="recruiter" 
+                                    onChange={handleChange}
+                                    />
                                     <label htmlFor="recruiter">Recruiter</label>
                                 </div>
-                                <div className="radio-option">
-                                    <input type="radio" name="usertype" value="jobseeker" id="jobSeeker" onChange={handleChange} required />
+                                <div className="role-option">
+                                    <input 
+                                    type="radio" 
+                                    name="usertype" 
+                                    value="jobseeker" 
+                                    id="jobSeeker" 
+                                    onChange={handleChange} 
+                                    />
                                     <label htmlFor="jobSeeker">Job Seeker</label>
                                 </div>
                             </div>
                             <button type="submit">Create</button>
-                            {error && <p className="error">{JSON.stringify(error)}</p>}
+                            {error && <p className="message error">{error.message}</p>}
+                            {/* {error && <p className="error">{JSON.stringify(error)}</p>} */}
                             <p className="message">Already registered? <Link to="/signin">Sign In</Link></p>
                         </form>
                     </div>

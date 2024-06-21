@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'jobApp.apps.JobappConfig',
     'rest_framework.authtoken',
-]
+    ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -41,6 +41,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+
 ]
 
 ROOT_URLCONF = 'jobProject.urls'
@@ -69,6 +71,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+        #'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
@@ -95,6 +98,13 @@ DATABASES = {
     }
 }
 
+# # settings.py
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Default: database-backed sessions
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -141,4 +151,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_HEADERS=True
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:5173',
+# ]
 AUTH_USER_MODEL= 'auth.User'

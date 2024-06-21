@@ -9,6 +9,27 @@
     text-align: center;
 }
 
+.page-container {
+    position: relative;
+    padding: 40px;
+}
+
+.left-image, .right-image {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 250px; /* Adjust the width as needed */
+    object-fit: cover;
+}
+
+.left-image {
+    left: 0;
+}
+
+.right-image {
+    right: 0;
+}
+
 /* Specific section styling */
 .content-space-1 {
     padding: 20px;
