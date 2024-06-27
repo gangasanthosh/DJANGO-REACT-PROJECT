@@ -167,7 +167,7 @@ a {
         max-width: 1200px; /* Constrain the width */
         margin: 0 auto; /* Center content */
     }
-}
+} 
 
 /* Medium screens */
 @media (max-width: 1199.98px) {

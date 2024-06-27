@@ -62,7 +62,7 @@ const JsNavbar = () => {
           <li><a href="/searchcompany"> Companies </a></li>
           <li><a href="/searchjob"> Jobs </a></li>
           <li><a href="/status"> Application Status</a></li>
-          <li><a href="#"> About Us </a></li>
+          <li><a href="/aboutus"> About Us </a></li>
         </ul>
       </div>
       <div className="relative">
@@ -77,7 +77,7 @@ const JsNavbar = () => {
             className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2"
             ref={dropdownRef}
           >
-            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Settings</a></li>
+            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/profilesetup">Settings</a></li>
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Profile</a></li>
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Sign Out</li>
           </ul>
@@ -93,7 +93,7 @@ const JsNavbar = () => {
               <li><a href="/searchcompany"> Companies </a></li>
               <li><a href="/searchjob"> Jobs </a></li>
               <li><a href="/status"> Application Status</a></li>
-              <li><a href="#"> About Us </a></li>
+              <li><a href="/aboutus"> About Us </a></li>
             </ul>
           </div>
           <div className="profile-container-mobile" onClick={toggleDropdown}>

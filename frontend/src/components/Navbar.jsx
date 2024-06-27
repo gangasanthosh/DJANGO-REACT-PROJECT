@@ -19,7 +19,7 @@ const Navbar = () => {
           <li><a href="/searchcompany"> Companies </a></li>
           <li><a href="/searchjob"> Jobs </a></li>
           <li><a href="/status"> Application Status</a></li>
-          <li><a href="#"> About Us </a></li>
+          <li><a href="/aboutus"> About Us </a></li>
         </ul>
       </div>
       <div className="nav-button">
@@ -36,7 +36,7 @@ const Navbar = () => {
             <li><a href="/searchcompanies"> Companies </a></li>
             <li><a href="/searchjob"> Jobs </a></li>
             <li><a href="status"> Application Status</a></li>
-            <li><a href="#"> About Us </a></li>
+            <li><a href="/aboutus"> About Us </a></li>
             </ul>
           </div>
           <div className="mobile-nav-button">

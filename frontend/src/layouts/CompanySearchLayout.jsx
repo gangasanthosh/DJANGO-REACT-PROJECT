@@ -35,7 +35,6 @@ useEffect(() => {
 
     return (
         <div>
-          {/* <Navbar/> */}
             {isAuthenticated ? <NavbarSignedIn /> : <NavbarSignedOut />}
             <CompanySearch/>
             <Companies/>

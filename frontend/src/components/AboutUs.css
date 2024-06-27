@@ -1,0 +1,120 @@
+/* Common styles */
+.everything-except-box{
+    max-width: 1200px; /* Set the width to match your design */
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* AboutUs.css */
+  .about-us {
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  .about-us__intro,
+  .about-us__who-we-are,
+  .about-us__what-we-do,
+  .about-us__vision,
+  .about-us__why-choose-us,
+  .about-us__call-to-action {
+    margin-bottom: 2rem;
+  }
+  
+  .about-us h1,
+  .about-us h2 {
+    margin-bottom: 1rem;
+    color: black;
+
+    text-align: left;
+  }
+  
+  .about-us p,
+  .about-us ul {
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  
+  .about-us ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+  }
+  
+  .about-us__intro h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: #822eaa;
+    font-weight: bold;
+    margin-top: revert;
+  }
+  
+  .about-us__intro p {
+    text-align: center;
+    font-size: 1.1rem;
+    margin: 0 auto;
+    max-width: 1000px;
+  }
+  
+  .about-us h2 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid #8436a8;
+    padding-bottom: 0.5rem;
+  }
+  
+  .about-us__what-we-do ul,
+  .about-us__why-choose-us ul {
+    margin-top: 0.5rem;
+    text-align: left;
+  }
+  
+  .about-us__what-we-do ul ul,
+  .about-us__why-choose-us ul ul {
+    list-style-type: circle;
+    margin-left: 1rem;
+    text-align: left;
+  }
+  
+  /* .about-us__call-to-action {
+    text-align: center;
+    background-color: #ecf0f1;
+    padding: 1rem;
+    border-radius: 5px;
+    max-width: 600;
+  }
+  
+  .about-us__call-to-action p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #8436a8;
+  } */
+
+  .about-us__call-to-action {
+    text-align: center;
+    background-color: #ecf0f1;
+    padding: 1rem;
+    border-radius: 5px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .about-us__call-to-action h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color:#8436a8;
+  }
+  
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+  
+    .about-us__intro h1 {
+      font-size: 2rem;
+    }
+  
+    .about-us h2 {
+      font-size: 1.5rem;
+    }
+  }
+  

@@ -104,7 +104,8 @@ const CompanySearchFilter = () => {
                     <div className="text-center">
                         <button
                             type="button"
-                            className="btn btn-primary btn-lg"
+                            className="btn btn-primary btn-sm"
+                            style={{ width: '100px' }}
                             onClick={handleSearch}>
                             Search
                         </button>

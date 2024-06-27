@@ -31,7 +31,7 @@ const RecNavbar = () => {
           <li><a href="/"> Home </a></li>
           <li><a href="#"> Applications </a></li>
           <li><a href="#"> About Us </a></li>
-          <li><a href="#"> Contact Us</a></li>
+          <li><a href="/aboutus"> Contact Us</a></li>
         </ul>
       </div>
       <div
@@ -62,7 +62,7 @@ const RecNavbar = () => {
               <li><a href="#"> Companies </a></li>
               <li><a href="#"> Jobs </a></li>
               <li><a href="#"> About Us </a></li>
-              <li><a href="#"> Contact Us</a></li>
+              <li><a href="/aboutus"> Contact Us</a></li>
             </ul>
           </div>
           <div className="profile-container-mobile" onClick={toggleDropdown}>

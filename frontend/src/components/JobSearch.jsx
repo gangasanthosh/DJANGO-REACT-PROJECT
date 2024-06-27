@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import leftImage from '../assets/images/left-image.jpg';
 import axios from '../help/axios';
 import './JobSearch.css';
-
+ 
 const JsSearchFilter = () => {
     const [locations, setLocations] = useState([]);
     const [jobs, setJobs] = useState([]);
@@ -127,6 +127,7 @@ const JsSearchFilter = () => {
                         <button
                             type="button"
                             className="btn btn-primary btn-lg"
+                            style={{ width: '100px'}}
                             onClick={handleSearch}>
                             Search
                         </button>

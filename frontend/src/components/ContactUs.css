@@ -1,0 +1,75 @@
+/* General styles */
+/* body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+  } */
+  
+  /* Contact Us styles */
+  .contact-us {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    background-color: #fff;
+  }
+  
+  .contact-us__image {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .contact-us__image img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .contact-us__form {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .contact-us__form h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .form-control::placeholder {
+    color: #999;
+  }
+  
+  textarea.form-control {
+    height: 150px;
+    resize: none;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #8436a8;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .btn:hover {
+    background-color: #6e2c87;
+    color: white;
+  }
+  

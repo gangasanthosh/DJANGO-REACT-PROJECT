@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Signin from '../components/Signin';
 import Signup from '../components/Signup';
+import AboutUsLayout from '../layouts/AboutUsLayout';
 import ApplicationStatusLayout from '../layouts/ApplicationStatusLayout';
 import CompanySearch from '../layouts/CompanySearchLayout';
 import HomeLayout from '../layouts/HomeLayout';
@@ -9,6 +10,7 @@ import JobApplicationFormLayout from '../layouts/JobApplicationFormLayout';
 import JobSearchLayout from '../layouts/JobSearchLayout';
 import JobViewLayout from '../layouts/JobViewLayout';
 import JsLayout from '../layouts/JsLayout';
+import ProfileSetupForm from '../layouts/ProfileFormLayout';
 import RecLayout from '../layouts/RecLayout';
 import ProtectedRoute from './ProtectedRouter';
 
@@ -21,6 +23,7 @@ const MainRoutes = () => {
       <Route path='/searchjob' element={<JobSearchLayout/>}/>
       <Route path="/viewjob/:jobId" element={<JobViewLayout/>} />
       <Route path='/searchcompany' element={<CompanySearch/>}/>
+      <Route path='/aboutus' element={<AboutUsLayout/>}/>
       {/* Add other routes here */}
 
       {/* Add protected routes here*/}
@@ -28,6 +31,7 @@ const MainRoutes = () => {
       <Route path="/jobseeker" element={<ProtectedRoute> <JsLayout/> </ProtectedRoute>}/>
       <Route path="/recruiter" element={<ProtectedRoute> <RecLayout/> </ProtectedRoute>}/>
       <Route path='/status' element={<ProtectedRoute><ApplicationStatusLayout/></ProtectedRoute>}/>
+      <Route path='/profilesetup' element={<protectedRoute><ProfileSetupForm/></protectedRoute>}/>
 
     </Routes>
   );
