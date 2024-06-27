@@ -8,14 +8,19 @@ from .serializers import usertableSerializer, jobseekerSerializer, recruiterSeri
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from rest_framework.views import APIView
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.http import JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework import status
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import os
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.middleware.csrf import get_token
+
 
 class usertableViewSet(viewsets.ModelViewSet):
     queryset = usertable.objects.all()
@@ -30,7 +35,6 @@ class recruiterViewSet(viewsets.ModelViewSet):
     serializer_class = recruiterSerializer
 
 class jobViewSet(viewsets.ModelViewSet):
-    #queryset = job.objects.all().order_by('-like_count')[:6]  # for jobcards
     queryset = job.objects.all()
     serializer_class = jobSerializer
 
@@ -41,13 +45,6 @@ class jobViewSet(viewsets.ModelViewSet):
         if max_likes:
             queryset = queryset.order_by('-like_count')[:int(max_likes)]
         return queryset
-    
-    # @action(detail=True, methods=['post'])
-    # def like(self, request, pk=None):
-    #     job = self.get_object()
-    #     job.like_count += 1
-    #     job.save()
-    #     return Response({'status': 'like count incremented'})
 
 class applicationViewSet(viewsets.ModelViewSet):
     queryset = application.objects.all()
@@ -66,8 +63,10 @@ class educationViewSet(viewsets.ModelViewSet):
     serializer_class = educationSerializer
 
 
+from django.views.decorators.csrf import csrf_exempt
 
-@api_view(['POST'])                                                                          # for signing in
+@csrf_exempt
+@api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
     if request.method == 'POST':
@@ -79,79 +78,20 @@ def login(request):
         user = authenticate(request, email=email, password=password)
         if user is not None:
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
+            csrf_token = get_token(request)  # Get CSRF token
+            return Response({'token': token.key, 'csrf_token': csrf_token})
     return Response({'error': 'Invalid Credentials'}, status=400)
 
+
 @api_view(['POST'])  # Use POST method for logging out
-@permission_classes([IsAuthenticated])  # Only authenticated users can access this view
+# @permission_classes([AllowAny])
 def logout(request):
     if request.method == 'POST':                                                                #signing out
         request.user.auth_token.delete()  # Delete the user's auth token
         return Response({'message': 'Logout successful'})
-    return Response({'error': 'Invalid request method'}, status=400) 
+    return Response({'error': 'Invalid request method'}, status=400)
     
 
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# @ensure_csrf_cookie
-# def login(request):
-#     if request.method == 'POST':
-#         data = request.data                                                                                           #login request csrf
-#         email = data.get('email')
-#         password = data.get('password')
-#         if not email or not password:
-#             return Response({'error': 'Email and password are required'}, status=400)
-#         user = authenticate(request, email=email, password=password)
-#         request.META["CSRF_COOKIE_USED"] = True
-#         if user is not None:
-#             django_login(request, user)  # Login user and create session
-#             return Response({'success': 'Logged in successfully'})
-#         return Response({'error': 'Invalid credentials'}, status=400)
-    
-# class LoginAPIView(APIView):
-#     permission_classes = [AllowAny]
-                                                                                                            #login view
-#     @ensure_csrf_cookie
-#     def post(self, request):
-#         data = request.data
-#         email = data.get('email')
-#         password = data.get('password')
-#         if not email or not password:
-#             return Response({'error': 'Email and password are required'}, status=400)
-#         user = authenticate(request, email=email, password=password)
-#         request.META["CSRF_COOKIE_USED"] = True
-#         if user is not None:
-#             login(request, user)  # Login user and create session
-#             return Response({'success': 'Logged in successfully'})
-#         return Response({'error': 'Invalid credentials'}, status=400)
-
-
-# @api_view(['POST'])
-# def logout(request):
-#     django_logout(request)
-#     return Response({'success': 'Logged out successfully'})
-
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def login(request):
-#     if request.method == 'POST':
-#         data = request.data
-#         email = data.get('email')
-#         password = data.get('password')
-#         if not email or not password:
-#             return Response({'error': 'email and password are required'}, status=400)
-#         user = authenticate(request, email=email, password=password)
-#         if user is not None:
-#             django_login(request, user)
-#             return Response({'success': 'Logged in successfully'})
-#         return Response({'error': 'Invalid credentials'}, status=400)
-#     return Response({'error': 'Bad request'}, status=400)
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def logout(request):
-    django_logout(request)
-    return Response({'success': 'Logged out successfully'})
 
 class RegisterView(APIView):                                                                 # for registering
     def post(self, request):
@@ -173,21 +113,12 @@ def get_usertype(request):
     except usertable.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
-# class GetUserTypeView(APIView):
-#     def post(self, request):
-#         try:
-#             email = request.data.get('email')                              #to get usertype and sign in to respective pages accordingly
-#             user = usertable.objects.get(email=email)
-#             usertype = user.usertype
-#             return Response({'usertype': usertype}, status=status.HTTP_200_OK)
-#         except usertable.DoesNotExist:
-#             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class SearchView(APIView):
     def get(self, request, format=None):
         # Get search parameters from the request
         job_title = request.query_params.get('job_title', None)
-        location = request.query_params.get('location', None)                       #for searching
+        location = request.query_params.get('location', None)                       #for searching Job
         industry = request.query_params.get('industry', None)
         # Filter the queryset based on the search parameters
         jobs = job.objects.all()
@@ -200,6 +131,24 @@ class SearchView(APIView):
         
         serializer = jobSerializer(jobs, many=True)
         return Response(serializer.data)
+
+class CompanySearchView(APIView):
+    def get(self, request, format=None):
+        name = request.query_params.get('name', None)
+        headquarters = request.query_params.get('headquarters', None)
+        industry = request.query_params.get('industry', None)
+        companies = company.objects.all()
+        if name:
+            companies = companies.filter(name__icontains=name)
+        if headquarters:
+            companies = companies.filter(headquarters__icontains=headquarters)
+        if industry:
+            companies = companies.filter(industry__icontains=industry)
+            
+        print("hello ")
+        serializer = companySerializer(companies, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 # Add the JobDetailView class here
 class JobDetailView(RetrieveAPIView):
@@ -220,5 +169,101 @@ def check_login_status(request):
         return Response({'status': 'logged_in'}, status=status.HTTP_200_OK)
     else:
         return Response({'status': 'not_logged_in'}, status=status.HTTP_401_UNAUTHORIZED)
+    
 
+import os
+import logging
+from django.core.files.storage import FileSystemStorage
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+logger = logging.getLogger(__name__)
+
+# Define the path to the resumes directory
+RESUMES_DIR = 'frontend/src/resume'
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated]) # Uncomment this when you have authentication in place
+def submit_application(request):
+    job_id = request.data.get('job_id')
+    email = request.data.get('email')
+    remarks = request.data.get('remarks')
+    resume = request.FILES.get('resume')
+
+    logger.info(f'Received data - job_id: {job_id}, email: {email}, remarks: {remarks}, resume: {resume}')
+
+    # Check for missing required fields
+    if not remarks or not resume:
+        logger.error('Missing required fields.')
+        return Response({'error': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # Ensure the resumes directory exists
+        os.makedirs(RESUMES_DIR, exist_ok=True)
+        fs = FileSystemStorage(location=RESUMES_DIR)
+        resume_name = fs.save(resume.name, resume)
+        resume_path = fs.path(resume_name)
+    except Exception as e:
+        logger.error(f'Error saving resume: {e}')
+        return Response({'error': 'Error saving resume.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        # Save the application instance
+        application_instance = application(
+            job_id=job_id,
+            email=email,
+            resume_path=resume_path,
+            remarks=remarks,
+            status='applied'
+        )
+        application_instance.save()
+    except Exception as e:
+        logger.error(f'Error saving application: {e}')
+        return Response({'error': 'Error saving application.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    logger.info('Application submitted successfully.')
+    return Response({'message': 'Application submitted successfully.'}, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+def get_userdetails(request):
+    email = request.data.get('email')
+    try:
+        user = usertable.objects.get(email=email)
+        user_details = {
+            'id': user.id,
+            'usertype': user.usertype,
+        }
+        return Response(user_details, status=status.HTTP_200_OK)
+    except usertable.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+class applicationstatus(APIView):
+    def get(self, request, email):
+        applications = application.objects.filter(email=email)
+        serializer = applicationSerializer(applications, many=True)
+        return Response(serializer.data)
+
+
+# class applicationstatus(APIView):
+#     def get(self, request, email):
+#         applications = application.objects.filter(email=email).select_related('job')  # Eager loading job
+
+#         serializer = applicationSerializer(applications, many=True)
+#         jobname = {}
+
+#         # Extract job IDs and fetch job names in a single request
+#         job_ids = [app.job.id for app in applications]
+#         jobs = job.objects.filter(pk__in=job_ids)
+
+#         for job in jobs:
+#             jobname[job.id] = job.job_title
+
+#         # Update serialized data with job names
+#         for application_data in serializer.data:
+#             application_data['jobname'] = jobname.get(application_data['job'])
+
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 

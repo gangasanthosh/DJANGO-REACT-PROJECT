@@ -1,0 +1,215 @@
+/* General page styling */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure full height */
+    padding: 20px;
+    text-align: center;
+}
+
+.page-container {
+    position: relative;
+    padding: 40px;
+}
+.gif-container{
+    margin-top: 0%;
+}
+
+
+.left-image, .right-image {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 250px; /* Adjust the width as needed */
+    object-fit: cover;
+}
+
+.left-image {
+    left: 0;
+}
+
+.right-image {
+    right: 0;
+}
+
+/* Specific section styling */
+.content-space-1 {
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 1200px; /* Constrain the width for larger screens */
+    width: 100%;
+}
+
+/* Form control and select elements styling */
+#openRolesSection .form-control,
+#openRolesSection .form-select,
+#openRolesSection .input-group-text {
+    font-size: 1rem; /* Adjust this size as needed */
+}
+
+/* Additional styling */
+body { 
+    margin-top: 20px; 
+}
+.shadow {
+    box-shadow: 0 0 3px rgb(134 54 168 / 20%) !important;
+}
+.rounded {
+    border-radius: 5px !important;
+}
+.bg-light {
+    background-color: #f7f8fa !important;
+}
+.bg-primary, .btn-primary, .btn-outline-primary:hover, .btn-outline-primary:focus,
+.btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus,
+.btn-outline-primary:not(:disabled):not(.disabled):active, .badge-primary,
+.nav-pills .nav-link.active, .pagination .active a, .custom-control-input:checked ~
+.custom-control-label:before, #preloader #status .spinner > div, .social-icon li a:hover,
+.back-to-top:hover, .back-to-home a, ::selection, #topnav .navbar-toggle.open span:hover,
+.owl-theme .owl-dots .owl-dot.active span, .owl-theme .owl-dots.clickable .owl-dot:hover span,
+.watch-video a .play-icon-circle, .sidebar .widget .tagcloud > a:hover, .flatpickr-day.selected,
+.flatpickr-day.selected:hover, .tns-nav button.tns-nav-active,
+.form-check-input.form-check-input:checked {
+    background-color: #8436a8 !important;
+}
+.badge {
+    padding: 5px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+}
+.btn-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, 
+.btn-outline-primary.active, .btn-outline-primary.focus, 
+.btn-outline-primary:not(:disabled):not(.disabled):active {
+    box-shadow: 0 3px 7px rgb(134 54 168 / 50%) !important;
+}
+.btn-primary, .btn-outline-primary, .btn-outline-primary:hover, .btn-outline-primary:focus, 
+.btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.focus, 
+.btn-outline-primary:not(:disabled):not(.disabled):active, .bg-soft-primary .border, 
+.alert-primary, .alert-outline-primary, .badge-outline-primary, .nav-pills .nav-link.active, 
+.pagination .active a, .form-group .form-control:focus, .form-group .form-control.active, 
+.custom-control-input:checked ~ .custom-control-label:before, 
+.custom-control-input:focus ~ .custom-control-label::before, .form-control:focus, 
+.social-icon li a:hover, #topnav .has-submenu.active.active .menu-arrow, 
+#topnav.scroll .navigation-menu > li:hover > .menu-arrow, #topnav.scroll .navigation-menu > li.active > .menu-arrow, 
+#topnav .navigation-menu > li:hover > .menu-arrow, .flatpickr-day.selected, 
+.flatpickr-day.selected:hover, .form-check-input:focus, .form-check-input.form-check-input:checked, 
+.container-filter li.active, .container-filter li:hover {
+    border-color: #8436a8 !important;
+}
+.btn {
+    padding: 8px 20px;
+    outline: none;
+    text-decoration: none;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    font-weight: 600;
+    border-radius: 5px;
+}
+.btn-primary {
+    background-color: #8436a8 !important;
+    border: 1px solid #8436a8 !important;
+    color: #fff !important;
+    box-shadow: 0 3px 7px rgb(134 54 168 / 50%);
+}
+a {
+    text-decoration: none;
+}
+.view-more-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.view-more-container a {
+    color: #8436a8 !important;
+    text-decoration: underline !important;
+}
+.card {
+    height: 100%; /* Ensure all cards have the same height */
+}
+.card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card .btn-primary {
+    margin-top: auto; /* Push the button to the bottom of the card */
+}
+.job-title {
+    font-size: 24px; /* Increase the font size of job title */
+    font-weight: bold; /* Make the job title bold */
+}
+.section-title .title {
+    font-size: 3rem; /* Larger size for the h1 element */
+}
+.section-title .para-desc {
+    font-size: 1.5rem; /* Larger size for the h3 element */
+}
+.search-results {
+    margin-top: 20px;
+}
+.search-results .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+.search-results .col-lg-4 {
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+
+/* Large screens */
+@media (min-width: 1200px) {
+    .content-space-1 {
+        max-width: 1200px; /* Constrain the width */
+        margin: 0 auto; /* Center content */
+    }
+}
+
+/* Medium screens */
+@media (max-width: 1199.98px) {
+    .job-title {
+        font-size: 1.5rem; /* Slightly smaller on medium screens */
+    }
+}
+
+/* Small screens */
+@media (max-width: 992px) {
+    .job-title {
+        font-size: 1.2rem; /* Smaller on small screens */
+    }
+    .section-title .title {
+        font-size: 2.5rem; /* Adjust title size on smaller screens */
+    }
+    .section-title .para-desc {
+        font-size: 1.2rem; /* Adjust description size on smaller screens */
+    }
+    .search-results .col-lg-4 {
+        flex: 0 0 50%; /* 2 cards per row on medium screens */
+        max-width: 50%;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 768px) {
+    .job-title {
+        font-size: 1rem; /* Smaller on extra small screens */
+    }
+    .search-results .col-lg-4 {
+        flex: 0 0 100%; /* 1 card per row on small screens */
+        max-width: 100%;
+    }
+    .page-container {
+        height: auto; /* Remove fixed height on small screens */
+    }
+}
+
+/* Very small screens */
+@media (max-width: 576px) {
+    .job-title {
+        font-size: 0.9rem; /* Adjust font size for very small screens */
+    }
+}

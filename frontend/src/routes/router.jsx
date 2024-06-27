@@ -2,12 +2,14 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Signin from '../components/Signin';
 import Signup from '../components/Signup';
+import ApplicationStatusLayout from '../layouts/ApplicationStatusLayout';
+import CompanySearch from '../layouts/CompanySearchLayout';
 import HomeLayout from '../layouts/HomeLayout';
-import JsApplyLayout from '../layouts/JsApplyLayout';
+import JobApplicationFormLayout from '../layouts/JobApplicationFormLayout';
+import JobSearchLayout from '../layouts/JobSearchLayout';
+import JobViewLayout from '../layouts/JobViewLayout';
 import JsLayout from '../layouts/JsLayout';
 import RecLayout from '../layouts/RecLayout';
-import SearchFilterLayout from '../layouts/SearchFilterLayout';
-import ViewApplyLayout from '../layouts/ViewApplyLayout';
 import ProtectedRoute from './ProtectedRouter';
 
 const MainRoutes = () => {
@@ -16,16 +18,16 @@ const MainRoutes = () => {
       <Route path="/" element={<HomeLayout />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
-      {/* <Route path='/recruiter' element={<RecLayout />}/> */}
-      <Route path='/search' element={<SearchFilterLayout/>}/>
-      <Route path="/viewapply/:jobId" element={<ViewApplyLayout/>} />
+      <Route path='/searchjob' element={<JobSearchLayout/>}/>
+      <Route path="/viewjob/:jobId" element={<JobViewLayout/>} />
+      <Route path='/searchcompany' element={<CompanySearch/>}/>
       {/* Add other routes here */}
 
-      {/* protected routes */}
-
-      <Route path="/apply" element={<ProtectedRoute> <JsApplyLayout/> </ProtectedRoute>}/>
+      {/* Add protected routes here*/}
+      <Route path="/apply/:jobId" element={<ProtectedRoute> <JobApplicationFormLayout/> </ProtectedRoute>}/>
       <Route path="/jobseeker" element={<ProtectedRoute> <JsLayout/> </ProtectedRoute>}/>
       <Route path="/recruiter" element={<ProtectedRoute> <RecLayout/> </ProtectedRoute>}/>
+      <Route path='/status' element={<ProtectedRoute><ApplicationStatusLayout/></ProtectedRoute>}/>
 
     </Routes>
   );

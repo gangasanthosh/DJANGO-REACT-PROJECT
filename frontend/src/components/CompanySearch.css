@@ -1,0 +1,105 @@
+
+
+.gif-container{
+    margin-top: 0%;
+}
+.job-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fff;
+    max-width: 1000px;
+    margin: 16px auto;
+    background-color: rgb(232, 232, 232);
+    box-shadow: 0 4px 6px rgba(27, 2, 2, 0.1);
+}
+
+.job-card-header {
+    margin-bottom: 16px;
+    color: #8436a8;
+}
+
+.company-name {
+    display: flex;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.job-card-header .details-right {
+    /* text-align: right; */
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+.job-card-details {
+    display: flex;
+    /* flex-wrap: wrap;              email,phn,website */
+    gap: 16px;
+    margin-bottom: 30px;
+}
+                                /* industry head quarters under job card header */
+.job-card-header .details-right h4 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #8436a8;
+    margin-bottom: 8px;
+    /* display: block; */
+}
+.detail-item h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #8436a8;
+}
+
+/* industry head quarters under job card header */
+.job-card-header .details-right span, .detail-right a {
+    /* display: block; */
+    font-size: 14px;
+    color: #000000;
+    text-decoration: none;
+}
+.detail-item span, .detail-item a {
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 8px ;
+    text-decoration: none;
+}
+
+.detail-item {
+    flex: 1 1 45%;
+}
+.job-card-header .details-right span{
+    flex: 0 3 auto;
+}
+
+
+
+.job-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item a:hover {
+    text-decoration: underline;
+    color: black;
+}
+
+.job-card-description {
+    margin-top: 16px;
+    text-align: left;
+}
+
+.job-card-description h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #8436a8;
+}
+
+.job-card-description p {
+    font-size: 14px;
+    color: #000000;
+    text-align: left;
+}

@@ -1,4 +1,5 @@
 
+import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import '../App.css';
 import Footer from '../components/Footer';
@@ -26,7 +27,7 @@ import Navbar from '../components/Navbar';
 const Layout = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
         useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('authToken');
         if (token) {
             setIsAuthenticated(true);
         } else {

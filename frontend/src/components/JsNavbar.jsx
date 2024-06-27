@@ -1,8 +1,9 @@
 
-import axios from 'axios';
+import Cookies from 'js-cookie';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import profile from '../assets/images/profile.jpg'; // Make sure to update the path to your profile image
+import profile from '../assets/images/profile.jpg';
+import axios from '../help/axios';
 import './JsNavbar.css';
 
 const JsNavbar = () => {
@@ -11,20 +12,23 @@ const JsNavbar = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
+
   const handleLogout = async () => {
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/logout/', {}, {
         headers: {
-          Authorization: `Token ${localStorage.getItem('token')}`,  // Send token for authentication
+          Authorization: `Token ${Cookies.get('authToken')}`,
         },
       });
-      localStorage.removeItem('token');  // Remove token from local storage
-      navigate('/signin'); // Perform any other logout actions, e.g., redirecting to login page
-      console.log(response.data.message);  // Display logout message
+      Cookies.remove('authToken')
+      Cookies.remove('userDetails');
+      navigate('/signin');
+      console.log(response.data.message);
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
+
 
   const handleHamburgerClick = () => {
     setMobileMenuVisible(!isMobileMenuVisible);
@@ -55,10 +59,10 @@ const JsNavbar = () => {
       <div className="nav-items">
         <ul>
           <li><a href="/"> Home </a></li>
-          <li><a href="#"> Companies </a></li>
-          <li><a href="/search"> Jobs </a></li>
+          <li><a href="/searchcompany"> Companies </a></li>
+          <li><a href="/searchjob"> Jobs </a></li>
+          <li><a href="/status"> Application Status</a></li>
           <li><a href="#"> About Us </a></li>
-          <li><a href="#"> Contact Us</a></li>
         </ul>
       </div>
       <div className="relative">
@@ -75,7 +79,6 @@ const JsNavbar = () => {
           >
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Settings</a></li>
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Profile</a></li>
-            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Application Status</a></li>
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Sign Out</li>
           </ul>
         )}
@@ -87,10 +90,10 @@ const JsNavbar = () => {
           <div className="mobile-nav-items">
             <ul>
               <li><a href="/"> Home </a></li>
-              <li><a href="#"> Companies </a></li>
-              <li><a href="#"> Jobs </a></li>
+              <li><a href="/searchcompany"> Companies </a></li>
+              <li><a href="/searchjob"> Jobs </a></li>
+              <li><a href="/status"> Application Status</a></li>
               <li><a href="#"> About Us </a></li>
-              <li><a href="#"> Contact Us</a></li>
             </ul>
           </div>
           <div className="profile-container-mobile" onClick={toggleDropdown}>
@@ -104,7 +107,6 @@ const JsNavbar = () => {
                 <ul>
                   <li><a href="/settings">Settings</a></li>
                   <li><a href="/profile">Profile</a></li>
-                  <li><a href="/profile">Application Status</a></li>
                   <li onClick={handleLogout}>Sign Out</li>
                 </ul>
               </div>

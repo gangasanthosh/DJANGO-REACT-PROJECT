@@ -21,3 +21,12 @@ class CustomEmailBackend(ModelBackend):
                 logger.error(f"Authentication failed: Incorrect password for user {email}")
         print("User information")
         return None
+
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+import jwt
+
+User = get_user_model()

@@ -133,6 +133,8 @@ class job(models.Model):
         self.like_count += 1
         self.save()
 
+from django.db import models
+
 class application(models.Model):
     STATUS_CHOICES = [
         ('Applied', 'Applied'),
@@ -145,15 +147,16 @@ class application(models.Model):
         ('Hired', 'Hired'),
         ('Closed', 'Closed'),
     ]
+
     job = models.ForeignKey(job, on_delete=models.CASCADE)
-    job_seeker = models.ForeignKey(jobseeker, on_delete=models.CASCADE)
+    email = models.EmailField()  # Change ForeignKey to EmailField
     resume_path = models.CharField(max_length=255)
-    app_desc = models.TextField(null=True)
+    remarks = models.TextField(null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Applied')
     applied_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.job} - {self.job_seeker}'
+        return f'{self.job}'
 
 
 

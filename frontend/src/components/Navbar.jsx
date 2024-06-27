@@ -16,10 +16,10 @@ const Navbar = () => {
       <div className="nav-items">
         <ul>
           <li><a href="/"> Home </a></li>
-          <li><a href="#"> Companies </a></li>
-          <li><a href="/search"> Jobs </a></li>
+          <li><a href="/searchcompany"> Companies </a></li>
+          <li><a href="/searchjob"> Jobs </a></li>
+          <li><a href="/status"> Application Status</a></li>
           <li><a href="#"> About Us </a></li>
-          <li><a href="#"> Contact Us</a></li>
         </ul>
       </div>
       <div className="nav-button">
@@ -32,10 +32,11 @@ const Navbar = () => {
         <div id="mobile-menu">
           <div className="mobile-nav-items">
             <ul>
-              <li><a href="#"> Home </a></li>
-              <li><a href="#"> Services </a></li>
-              <li><a href="#"> About </a></li>
-              <li><a href="#"> Contact </a></li>
+            <li><a href="/"> Home </a></li>
+            <li><a href="/searchcompanies"> Companies </a></li>
+            <li><a href="/searchjob"> Jobs </a></li>
+            <li><a href="status"> Application Status</a></li>
+            <li><a href="#"> About Us </a></li>
             </ul>
           </div>
           <div className="mobile-nav-button">

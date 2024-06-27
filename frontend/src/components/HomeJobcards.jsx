@@ -1,7 +1,7 @@
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
 import React, { useEffect, useState } from "react";
+import axios from "../help/axios";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -136,7 +136,7 @@ const Jobs = () => {
           <div className="col-md-4 mt-4 mt-sm-0 d-none d-md-block">
             <div className="text-center text-md-end">
               <div className="view-more-container">
-                <a href="/search" className="text-primary">View more Jobs</a>
+                <a href="/searchjob" className="text-primary">View more Jobs</a>
               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@ const Jobs = () => {
                     </span>
                   </div>
                   <div className="mt-3">
-                    <a href={`/viewapply/${job.id}`} className="btn btn-primary">View Details & Apply</a>
+                    <a href={`/viewjob/${job.id}`} className="btn btn-primary">View Details & Apply</a>
                   </div>
                 </div>
               </div>
@@ -164,7 +164,7 @@ const Jobs = () => {
 
           <div className="col-12 mt-4 pt-2 d-block d-md-none text-center">
             <div className="view-more-container">
-              <a href="/search" className="btn btn-primary">
+              <a href="/searchjob" className="btn btn-primary">
                 View more Jobs
               </a>
             </div>
