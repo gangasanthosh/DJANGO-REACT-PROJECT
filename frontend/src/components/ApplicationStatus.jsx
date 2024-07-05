@@ -6,6 +6,7 @@ import './ApplicationStatus.css';
 const ApplicationStatus = () => {
     const [applications, setApplications] = useState([]);
     const email = Cookies.get('email');
+    
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/api/applications/${email}/`)

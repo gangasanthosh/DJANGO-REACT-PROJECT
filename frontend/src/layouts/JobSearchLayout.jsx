@@ -1,47 +1,33 @@
-import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import '../App.css';
 import Footer from '../components/Footer';
 import JobSearch from '../components/JobSearch';
 import JsNavbar from '../components/JsNavbar';
 import Navbar from '../components/Navbar';
+import RecNavbar from '../components/RecNavbar';
 
 
 
-    const NavbarSignedIn = () => {
-        return (
-            <div>
-                <JsNavbar/>
-            </div>
-            );
-        };
+const NavbarSignedIn = () => {
+    const userType = useSelector((state) => state.auth.userType);
+    return (
+    <div>
+        {userType === 'jobseeker' ? <JsNavbar /> : <RecNavbar />}
+    </div>
+    );
+};
+;
 
-    const NavbarSignedOut = () => {
-        return (
-            <div>
-                <Navbar/>
-            </div>
-            );
-        };
-    const SearchFilterLayout = () => {
-        const [isAuthenticated, setIsAuthenticated] = useState(false);
-        useEffect(() => {
-            const token = Cookies.get('authToken');
-            if (token) {
-                setIsAuthenticated(true);
-            } else {
-                setIsAuthenticated(false);
-            }
-        }  , []);
-
-        return (
-            <div>
-              {/* <Navbar/> */}
-                {isAuthenticated ? <NavbarSignedIn /> : <NavbarSignedOut />}
-                <JobSearch/>
-                <Footer/>
-            </div>
-        );
-        }
+const SearchFilterLayout = () => {
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    return (
+        <div className="web-app">
+        {isAuthenticated ? <NavbarSignedIn /> : <Navbar />}
+        <JobSearch/>
+        <Footer/>
+        </div>
+        )
+    }
 
 export default SearchFilterLayout;

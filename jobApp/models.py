@@ -104,7 +104,7 @@ class company(models.Model):
 class experience(models.Model):
     job_seeker = models.ForeignKey(jobseeker, on_delete=models.CASCADE)
     job_title = models.CharField(max_length=255)
-    company_id = models.ForeignKey(company, on_delete=models.CASCADE)
+    company_name = models.CharField(max_length=200,null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
@@ -131,7 +131,7 @@ class job(models.Model):
     company_id = models.ForeignKey('company', on_delete=models.CASCADE)
     industry = models.CharField(max_length=100, blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
-    jobpost_date = models.DateField()
+    jobpost_date = models.DateField(auto_now_add=True)
     last_date = models.DateField(blank=True, null=True)
     employment_type = models.CharField(max_length=20, choices=EMPLOYMENT_TYPE_CHOICES)
     like_count = models.PositiveIntegerField(default=0)

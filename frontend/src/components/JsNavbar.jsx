@@ -1,9 +1,12 @@
 
 import Cookies from 'js-cookie';
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import profile from '../assets/images/profile.jpg';
 import axios from '../help/axios';
+import { logout } from '../redux/reducers/authSlice';
+import { persistor } from '../redux/store/store';
 import './JsNavbar.css';
 
 const JsNavbar = () => {
@@ -11,6 +14,7 @@ const JsNavbar = () => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const dispatch = useDispatch();
 
 
   const handleLogout = async () => {
@@ -22,8 +26,14 @@ const JsNavbar = () => {
       });
       Cookies.remove('authToken')
       Cookies.remove('userDetails');
+      Cookies.remove('email')
+      localStorage.clear();
+      sessionStorage.clear();
+      // Dispatch logout action to clear Redux state
+      dispatch(logout());
+      await persistor.purge();
       navigate('/signin');
-      console.log(response.data.message);
+      console.log('logout succesful');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -77,14 +87,13 @@ const JsNavbar = () => {
             className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2"
             ref={dropdownRef}
           >
-            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/profilesetup">Settings</a></li>
-            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Profile</a></li>
+            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Settings</a></li>
+            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/profilesetup">Profile</a></li>
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Sign Out</li>
           </ul>
         )}
       </div>
       <div id="hamburger-menu" onClick={handleHamburgerClick}>&#9776;</div>
-
       {isMobileMenuVisible && (
         <div id="mobile-menu">
           <div className="mobile-nav-items">

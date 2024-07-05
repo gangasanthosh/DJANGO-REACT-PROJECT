@@ -1,42 +1,29 @@
-import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import '../App.css';
 import Footer from '../components/Footer';
 import JobView from '../components/JobView';
 import JsNavbar from '../components/JsNavbar';
 import Navbar from '../components/Navbar';
+import RecNavbar from '../components/RecNavbar';
 
 
 const NavbarSignedIn = () => {
+  const userType = useSelector((state) => state.auth.userType);
   return (
-    <div>
-      <JsNavbar/>
-    </div>
+  <div>
+      {userType === 'jobseeker' ? <JsNavbar /> : <RecNavbar />}
+  </div>
   );
 };
+;
 
-const NavbarSignedOut = () => {
-  return (
-    <div>
-      <Navbar/>
-    </div>
-  );
-};
 const ViewApplyLayout = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  useEffect(() => {
-    const token = Cookies.get('authToken');
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
 
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <div>
-        {/* <Navbar/> */}
-        {isAuthenticated ? <NavbarSignedIn /> : <NavbarSignedOut />}
+        {isAuthenticated ? <NavbarSignedIn /> : <Navbar />}
         <JobView/>
         <Footer/>
     </div>

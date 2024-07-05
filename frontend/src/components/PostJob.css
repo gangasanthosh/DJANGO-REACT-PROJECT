@@ -1,0 +1,60 @@
+.postjob-container {
+    font-family: Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+  }
+  
+  .postjob-image {
+    width: 400px;
+    height: auto;
+    margin-right: 20px;
+    border-radius: 10px;
+  }
+  
+  .postjob-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .postjob-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .postjob-form label {
+    font-size: 1em;
+    margin: 10px 0 5px;
+  }
+  
+  .postjob-form input,
+  .postjob-form textarea,
+  .postjob-form select {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+  }
+  
+  .submit-button {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #8436a8;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #762a99;
+  }
+  

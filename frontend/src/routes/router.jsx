@@ -7,12 +7,14 @@ import ApplicationStatusLayout from '../layouts/ApplicationStatusLayout';
 import CompanySearch from '../layouts/CompanySearchLayout';
 import HomeLayout from '../layouts/HomeLayout';
 import JobApplicationFormLayout from '../layouts/JobApplicationFormLayout';
+import JobPostedLayout from '../layouts/JobPostedLayout';
 import JobSearchLayout from '../layouts/JobSearchLayout';
 import JobViewLayout from '../layouts/JobViewLayout';
-import JsLayout from '../layouts/JsLayout';
+import PostJobFormLayout from '../layouts/PostJobFormLayout';
 import ProfileSetupForm from '../layouts/ProfileFormLayout';
-import RecLayout from '../layouts/RecLayout';
+import ViewApplicationLayout from '../layouts/ViewApplicationLayout';
 import ProtectedRoute from './ProtectedRouter';
+
 
 const MainRoutes = () => {
   return (
@@ -28,10 +30,11 @@ const MainRoutes = () => {
 
       {/* Add protected routes here*/}
       <Route path="/apply/:jobId" element={<ProtectedRoute> <JobApplicationFormLayout/> </ProtectedRoute>}/>
-      <Route path="/jobseeker" element={<ProtectedRoute> <JsLayout/> </ProtectedRoute>}/>
-      <Route path="/recruiter" element={<ProtectedRoute> <RecLayout/> </ProtectedRoute>}/>
       <Route path='/status' element={<ProtectedRoute><ApplicationStatusLayout/></ProtectedRoute>}/>
-      <Route path='/profilesetup' element={<protectedRoute><ProfileSetupForm/></protectedRoute>}/>
+      <Route path='/profilesetup' element={<ProtectedRoute><ProfileSetupForm/></ProtectedRoute>}/>
+      <Route path='/postjob' element={<ProtectedRoute><PostJobFormLayout/></ProtectedRoute>}/>
+      <Route path='/jobsposted' element={<ProtectedRoute><JobPostedLayout/></ProtectedRoute>}/>
+      <Route path='/view-application/:jobId' element={<ProtectedRoute><ViewApplicationLayout/></ProtectedRoute>}/>
 
     </Routes>
   );

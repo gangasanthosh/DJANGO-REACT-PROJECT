@@ -14,12 +14,13 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializer
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django.http import JsonResponse
-from rest_framework import status
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 import os
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.middleware.csrf import get_token
+import logging
+from django.core.files.storage import FileSystemStorage
 
 
 class usertableViewSet(viewsets.ModelViewSet):
@@ -65,6 +66,8 @@ class educationViewSet(viewsets.ModelViewSet):
 
 from django.views.decorators.csrf import csrf_exempt
 
+
+"""to login"""
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -83,8 +86,10 @@ def login(request):
     return Response({'error': 'Invalid Credentials'}, status=400)
 
 
+
+"""to logout"""
 @api_view(['POST'])  # Use POST method for logging out
-# @permission_classes([AllowAny])
+# @permission_classes([IsAuthenticated])
 def logout(request):
     if request.method == 'POST':                                                                #signing out
         request.user.auth_token.delete()  # Delete the user's auth token
@@ -92,7 +97,7 @@ def logout(request):
     return Response({'error': 'Invalid request method'}, status=400)
     
 
-
+"""to register new user"""
 class RegisterView(APIView):                                                                 # for registering
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -102,7 +107,7 @@ class RegisterView(APIView):                                                    
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+"""to get user type and route accordingly"""
 @api_view(['POST'])
 def get_usertype(request):
     try:
@@ -114,6 +119,8 @@ def get_usertype(request):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
 
+
+"""to search for jobs"""
 class SearchView(APIView):
     def get(self, request, format=None):
         # Get search parameters from the request
@@ -132,6 +139,8 @@ class SearchView(APIView):
         serializer = jobSerializer(jobs, many=True)
         return Response(serializer.data)
 
+
+"""to search for company"""
 class CompanySearchView(APIView):
     def get(self, request, format=None):
         name = request.query_params.get('name', None)
@@ -150,19 +159,22 @@ class CompanySearchView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# Add the JobDetailView class here
+
+
+#JobDetail View 
 class JobDetailView(RetrieveAPIView):
     queryset = job.objects.all()
     serializer_class = jobSerializer
     lookup_field = 'id'
 
-# Add the companyDetailView class here
+# company detail
 class CompanyDetailView(RetrieveAPIView):
     queryset = company.objects.all()
     serializer_class = companySerializer
     lookup_field = 'id'
 
 
+"""to check login status"""
 @api_view(['GET'])
 def check_login_status(request):
     if request.user.is_authenticated:
@@ -171,18 +183,12 @@ def check_login_status(request):
         return Response({'status': 'not_logged_in'}, status=status.HTTP_401_UNAUTHORIZED)
     
 
-import os
-import logging
-from django.core.files.storage import FileSystemStorage
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
 
+
+"""to store resume and application"""
 logger = logging.getLogger(__name__)
 
-# Define the path to the resumes directory
-RESUMES_DIR = 'frontend/src/resume'
+RESUMES_DIR = 'frontend/src/resume'        #relative path
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated]) # Uncomment this when you have authentication in place
@@ -227,6 +233,8 @@ def submit_application(request):
     return Response({'message': 'Application submitted successfully.'}, status=status.HTTP_201_CREATED)
 
 
+
+"""to fetch userdetails"""
 @api_view(['POST'])
 def get_userdetails(request):
     email = request.data.get('email')
@@ -240,6 +248,8 @@ def get_userdetails(request):
     except usertable.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
+
+"""to view application status gotta edit it job id is visible"""
 class applicationstatus(APIView):
     def get(self, request, email):
         applications = application.objects.filter(email=email)
@@ -247,23 +257,151 @@ class applicationstatus(APIView):
         return Response(serializer.data)
 
 
-# class applicationstatus(APIView):
-#     def get(self, request, email):
-#         applications = application.objects.filter(email=email).select_related('job')  # Eager loading job
+"""fetch user id using for profile setup"""
+def get_user_id(request):
+    email = request.GET.get('email')
+    try:
+        user = usertable.objects.get(email=email)
+        return JsonResponse({'userId': user.id})
+    except usertable.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
 
-#         serializer = applicationSerializer(applications, many=True)
-#         jobname = {}
 
-#         # Extract job IDs and fetch job names in a single request
-#         job_ids = [app.job.id for app in applications]
-#         jobs = job.objects.filter(pk__in=job_ids)
+"""fetch user id in jobseeker table using for profile setup"""
+def get_jobseeker_id(request):
+    user_id = request.GET.get('user_id')
+    try:
+        jobseeker = jobseeker.objects.get(user_id=user_id)
+        return JsonResponse({'jobseekerId': jobseeker.id})
+    except jobseeker.DoesNotExist:
+        return JsonResponse({'error': 'JobSeeker not found'}, status=404)
+    
 
-#         for job in jobs:
-#             jobname[job.id] = job.job_title
 
-#         # Update serialized data with job names
-#         for application_data in serializer.data:
-#             application_data['jobname'] = jobname.get(application_data['job'])
+"""personal info setup for profile setup"""
+@api_view(['PUT'])
+def update_personal_info(request, pk):
+    try:
+        job_seeker = jobseeker.objects.get(id=pk)
+    except jobseeker.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = jobseekerSerializer(job_seeker, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#         return Response(serializer.data, status=status.HTTP_200_OK)
 
+"""education info setup for profile setup"""
+@api_view(['PUT'])
+def update_education(request, pk):
+    try:
+        education_instance = education.objects.get(job_seeker=pk)
+    except education.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = educationSerializer(education_instance, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+"""experience info setup for profile setup"""
+@api_view(['PUT'])
+def update_experience(request, pk):
+    try:
+        experience_instance = experience.objects.get(job_seeker=pk)
+    except experience.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = experienceSerializer(experience_instance, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+"""to post Job"""
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.dateparse import parse_date
+import json
+
+def get_recruiter_by_email(request):
+    email = request.GET.get('email')
+    if not email:
+        return JsonResponse({'error': 'Email parameter is missing'}, status=400)
+    try:
+        user = usertable.objects.get(email=email)
+        rec = recruiter.objects.get(user=user)
+        return JsonResponse({'id': rec.id})
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+    except recruiter.DoesNotExist:
+        return JsonResponse({'error': 'Recruiter not found'}, status=404)
+
+def get_company_by_recruiter_id(request):
+    recruiter_id = request.GET.get('recruiter_id')
+    if not recruiter_id:
+        return JsonResponse({'error': 'Recruiter ID parameter is missing'}, status=400)
+
+    try:
+        comp = company.objects.get(recruiter__id=recruiter_id)
+        return JsonResponse({'id': comp.id})
+    except company.DoesNotExist:
+        return JsonResponse({'error': 'Company not found'}, status=404)
+
+@csrf_exempt
+def create_job(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        
+        try:
+            rec = recruiter.objects.get(id=data['recruiter'])
+            comp = company.objects.get(id=data['company'])
+
+            jobdata = job(
+                job_title=data['jobTitle'],
+                job_description=data['jobDescription'],
+                industry=data['industry'],
+                location=data['location'],
+                jobpost_date=parse_date(data['jobPostDate']),
+                last_date=parse_date(data['lastDate']),
+                employment_type=data['employmentType'],
+                recruiter=rec,
+                company_id=comp,
+            )
+            jobdata.save()
+            return JsonResponse({'message': 'Job posted successfully'})
+        except recruiter.DoesNotExist:
+            return JsonResponse({'error': 'Recruiter not found'}, status=404)
+        except company.DoesNotExist:
+            return JsonResponse({'error': 'Company not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+from rest_framework import generics
+
+"""jobs posted by user"""
+class JobsByUserAPIView(generics.ListAPIView):
+    serializer_class = jobSerializer
+
+    def get_queryset(self):
+        recruiter_id = self.request.query_params.get('recruiterId')
+        if recruiter_id:
+            return job.objects.filter(recruiter_id=recruiter_id)
+        return job.objects.none()
+    
+
+    """to display applications for a particular job"""
+
+class ApplicationsByJobAPIView(generics.ListAPIView):
+    serializer_class = applicationSerializer
+
+    def get_queryset(self):
+        job_id = self.kwargs['job_id']  # Assuming job_id is passed in URL
+        return application.objects.filter(job_id=job_id)

@@ -1,78 +1,59 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import homeIcon from '../assets/images/homeArrow.jpg';
 import signInImage from '../assets/images/signin.jpg';
+import { loginSuccess } from '../redux/reducers/authSlice';
 import './LoginPage.css';
 
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Sending:", { email, password }); 
+    setLoading(true);
+    setError('');
+
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', {
-        email,
-        password,
-      });
+      const response = await axios.post('http://localhost:8000/api/login/', { email, password });
 
-      const csrfToken = response.data.csrf_token;
-      const loginRequest = await axios.post('http://localhost:8000/api/login/', {
-      email,
-      password,
-      }, {
-      headers: {
-        'X-CSRFToken': csrfToken
-      }
-    });
+      if (response.data.token) {
+        Cookies.set('authToken', response.data.token);
+        Cookies.set('email', email);
+        console.log('Login successful, token saved:', response.data.token);
 
-        if (response.data.token) {
-          Cookies.set('authToken', response.data.token);
-          Cookies.set('email',email)
-          console.log('Login successful, token saved:', response.data.token);
-        } else {
-          setError('Invalid email or password');
-        }
+        const userTypeResponse = await axios.post('http://localhost:8000/api/get_usertype/', { email });
+        const userType = userTypeResponse.data.usertype;
 
-        // Fetch user type
-        const userTypeResponse = await axios.post('http://localhost:8000/api/get_usertype/', {
+        const userDetailsResponse = await axios.post('http://localhost:8000/api/get_userdetails/', { email });
+        const userDetails = userDetailsResponse.data;
+
+        dispatch(loginSuccess({
+          token: response.data.token,
+          userType,
+          userDetails,
           email,
-        });
+        }));
 
-        if (userTypeResponse.data.usertype === 'jobseeker' || userTypeResponse.data.usertype === 'recruiter') {
-          navigate(from, { replace: true });
-        } else {
-          setError('Invalid user type');
-        }
-      // Fetch user details
-      const userDetailsResponse = await axios.post('http://localhost:8000/api/get_userdetails/', {
-        email,
-      });
-
-
-      if (userDetailsResponse.data) {
-        Cookies.set('userDetails', JSON.stringify(userDetailsResponse.data));  // Corrected
-        sessionStorage.setItem('userDetails', JSON.stringify(userDetailsResponse.data));
-        console.log('User details fetched and stored:', userDetailsResponse.data);
+        // Navigate to the appropriate home page
+        navigate(from, { replace: true });
       } else {
-        setError('Failed to fetch user details');
-        return;
+        setError('Invalid email or password');
       }
     } catch (error) {
-      console.error('Login error:', error.response || error); // More detailed error output
-      if (error.response && error.response.status === 400) {
-        setError('Invalid email or password');
-      } else {
-        setError('An error occurred. Please try again.');
-      }
+      console.error('Login error:', error.response || error);
+      setError('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,7 +86,9 @@ const Signin = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <button type="submit">Login</button>
+              <button type="submit" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
+              </button>
               {error && <p className="message error">{error}</p>}
               <p className="message">
                 Not registered? <Link to="/signup">Create an account</Link>
@@ -122,4 +105,3 @@ const Signin = () => {
 };
 
 export default Signin;
-

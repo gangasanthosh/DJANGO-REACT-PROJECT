@@ -1,32 +1,20 @@
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
 import logging
-
-
-
 logger = logging.getLogger(__name__)
 
 class CustomEmailBackend(ModelBackend):
-    def authenticate(self, request, email=None, password=None,**kwargs):
+    def authenticate(self, request, email=None, password=None, **kwargs):
+        logger.debug(f"Authenticating user: {email}")
         UserModel = get_user_model()
         try:
-            user = get_user_model().objects.get(email=email)
-        except get_user_model().DoesNotExist:
-            logger.error(f"Authentication failed: No user found with email {email}")
+            user = UserModel.objects.get(email=email)
+        except UserModel.DoesNotExist:
+            logger.debug("User does not exist")
             return None
         else:
-            if user.check_password(password):
+            if user.check_password(password) and self.user_can_authenticate(user):
+                logger.debug("Authentication successful")
                 return user
-            else:
-                logger.error(f"Authentication failed: Incorrect password for user {email}")
-        print("User information")
+            logger.debug("Authentication failed")
         return None
-
-
-from django.conf import settings
-from django.contrib.auth import get_user_model
-from rest_framework.authentication import BaseAuthentication
-from rest_framework.exceptions import AuthenticationFailed
-import jwt
-
-User = get_user_model()

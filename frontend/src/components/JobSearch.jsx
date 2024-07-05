@@ -17,10 +17,10 @@ const JsSearchFilter = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/company/')
+        axios.get('http://127.0.0.1:8000/api/job/')
             .then(response => {
-                const headquarters = response.data.map(company => company.headquarters);
-                setLocations(headquarters);
+                const location = response.data.map(job => job.location);
+                setLocations(location);
             })
             .catch(error => {
                 console.error('Error fetching locations:', error);
@@ -37,9 +37,9 @@ const JsSearchFilter = () => {
                 setError('Failed to load job titles.');
             });
         
-        axios.get('http://127.0.0.1:8000/api/company/')
+        axios.get('http://127.0.0.1:8000/api/job/')
             .then(response => {
-                const industrys = response.data.map(company => company.industry);
+                const industrys = response.data.map(job => job.industry);
                 setIndustrys(industrys);
             })
             .catch(error => {
