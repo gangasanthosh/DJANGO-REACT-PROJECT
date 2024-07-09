@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from '../help/axios';
 import './ProfileForm.css';
 
 const validateInput = (name, value) => {
@@ -42,12 +43,13 @@ const validateInput = (name, value) => {
   return error;
 };
 
+
 const UserDetails = ({ formData, handleInputChange, handleSave, errors }) => {
   return (
     <section className="user-details">
       <h2>Personal Info</h2>
       <form>
-        <label>
+      <label>
           First Name:
           <input
             type="text"
@@ -104,7 +106,18 @@ const UserDetails = ({ formData, handleInputChange, handleSave, errors }) => {
             onChange={handleInputChange}
           />
         </label>
-        <button type="button" onClick={() => handleSave('Personal Info')}>
+        <label>
+          Gender:
+          <select name="gender" value={formData.gender} onChange={handleInputChange} className='form-control'>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </label>
+        <label>
+          Date of Birth:
+          <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} />
+        </label>
+        <button type="button" onClick={() => handleSave('jobseeker')}>
           Save
         </button>
       </form>
@@ -117,7 +130,7 @@ const UserEducation = ({ formData, handleInputChange, handleSave, errors }) => {
     <section className="user-education">
       <h2>Education</h2>
       <form>
-        <label>
+      <label>
           Education Level:
           <select name="educationLevel" value={formData.educationLevel} onChange={handleInputChange}>
             <option value="10th">10th</option>
@@ -186,7 +199,7 @@ const UserEducation = ({ formData, handleInputChange, handleSave, errors }) => {
             onChange={handleInputChange}
           />
         </label>
-        <button type="button" onClick={() => handleSave('Education')}>
+        <button type="button" onClick={() => handleSave('education')}>
           Save
         </button>
       </form>
@@ -199,7 +212,7 @@ const UserExperience = ({ formData, handleInputChange, handleSave, errors }) => 
     <section className="user-experience">
       <h2>Experience</h2>
       <form>
-        <label>
+      <label>
           Job Title:
           <input
             type="text"
@@ -253,13 +266,15 @@ const UserExperience = ({ formData, handleInputChange, handleSave, errors }) => 
             onChange={handleInputChange}
           />
         </label>
-        <button type="button" onClick={() => handleSave('Experience')}>
+        <button type="button" onClick={() => handleSave('experience')}>
           Save
         </button>
       </form>
     </section>
   );
 };
+
+
 
 const UserAccount = ({ formData, handleInputChange, handleSave, handleDelete, errors }) => {
   return (
@@ -297,11 +312,14 @@ const UserAccount = ({ formData, handleInputChange, handleSave, handleDelete, er
   );
 };
 
+
 const Dashboard = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     contactNumber: '',
+    gender:'',
+    dob:'',
     location: '',
     description: '',
     isFresher: false,
@@ -320,15 +338,44 @@ const Dashboard = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [educations, setEducations] = useState([{}]);
+  const [experiences, setExperiences] = useState([{}]);
+  const [jobSeekerId, setJobSeekerId] = useState(null);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const inputValue = type === 'checkbox' ? checked : value;
+  useEffect(() => {
+    const fetchJobSeekerId = async () => {
+      const email = Cookies.get('email');
+      if (email) {
+        try {
+          const response = await axios.get(`http://127.0.0.1:8000/api/jobseekerid?email=${email}`);
+          setJobSeekerId(response.data.jobseekerId);
+          console.log("fetched jobseekerId and saved", response.data)
+        } catch (error) {
+          console.error('Error fetching JobSeeker ID:', error);
+        }
+      }
+    };
+    fetchJobSeekerId();
+  }, []);
 
-    setFormData({
-      ...formData,
-      [name]: inputValue,
-    });
+  const handleInputChange = (e, index, type) => {
+    const { name, value, type: inputType, checked } = e.target;
+    const inputValue = inputType === 'checkbox' ? checked : value;
+
+    if (type === 'education') {
+      const newEducations = [...educations];
+      newEducations[index][name] = inputValue;
+      setEducations(newEducations);
+    } else if (type === 'experience') {
+      const newExperiences = [...experiences];
+      newExperiences[index][name] = inputValue;
+      setExperiences(newExperiences);
+    } else {
+      setFormData({
+        ...formData,
+        [name]: inputValue,
+      });
+    }
 
     setErrors({
       ...errors,
@@ -336,16 +383,60 @@ const Dashboard = () => {
     });
   };
 
-  const handleSave = (section) => {
-    alert(`Saved ${section}`);
-    console.log('Form Data:', formData);
-    Cookies.set('formData', JSON.stringify(formData));
-  };
 
-  const handleDelete = () => {
+  const handleSave = async (section, index) => {
+    if (!jobSeekerId) { // Use jobSeekerId here
+      alert('Jobseeker ID is not set');
+      return;
+    }
+  
+    try {
+      let payload = {};
+      let url = '';
+  
+      if (section === 'jobseeker') {
+        payload = {
+          ...formData,
+          user: jobSeekerId, // Use jobSeekerId here
+        };
+        url = 'http://127.0.0.1:8000/api/save_jobseeker';
+      } else if (section === 'education') {
+        payload = {
+          ...educations[index],
+          job_seeker: jobSeekerId, // Use jobSeekerId here
+        };
+        url = 'http://127.0.0.1:8000/api/save_education';
+      } else if (section === 'experience') {
+        payload = {
+          ...experiences[index],
+          job_seeker: jobSeekerId, // Use jobSeekerId here
+        };
+        url = 'http://127.0.0.1:8000/api/save_experience';
+      }
+  
+      // Remove keys with empty string values
+      Object.keys(payload).forEach((key) => {
+        if (payload[key] === '') {
+          payload[key] = null;
+        }
+      });
+  
+      const response = await axios.post(url, payload);
+      alert(`Saved ${section}`);
+      console.log('Form Data:', response.data);
+    } catch (error) {
+      console.error('Error saving data:', error);
+      alert(`Error saving ${section}`);
+    }
+  };
+  
+
+  const handleAddEducation = () => setEducations([...educations, {}]);
+  const handleAddExperience = () => setExperiences([...experiences, {}]);
+
+  const handleDelete = async () => {
     const confirmDelete = window.confirm('Are you sure you want to delete your account?');
     if (confirmDelete) {
-      console.log('Account Deleted');
       // Perform the account deletion logic here
     }
   };
@@ -353,31 +444,19 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <h1>Dashboard</h1>
-      <UserDetails
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleSave={handleSave}
-        errors={errors}
-      />
-      <UserEducation
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleSave={handleSave}
-        errors={errors}
-      />
-      <UserExperience
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleSave={handleSave}
-        errors={errors}
-      />
-      <UserAccount
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleSave={handleSave}
-        handleDelete={handleDelete}
-        errors={errors}
-      />
+      <UserDetails formData={formData} handleInputChange={handleInputChange} handleSave={handleSave} errors={errors} />
+
+      {educations.map((education, index) => (
+        <UserEducation key={index} formData={education} handleInputChange={(e) => handleInputChange(e, index, 'education')} handleSave={handleSave} errors={errors} />
+      ))}
+      <button type="button" onClick={handleAddEducation} className='mt-3 mb-3'>Add Education</button>
+
+      {experiences.map((experience, index) => (
+        <UserExperience key={index} formData={experience} handleInputChange={(e) => handleInputChange(e, index, 'experience')} handleSave={handleSave} errors={errors} />
+      ))}
+      <button type="button" onClick={handleAddExperience} className='mt-3 mb-3'>Add Experience</button>
+      
+      <UserAccount formData={formData} handleInputChange={handleInputChange} handleSave={handleSave} handleDelete={handleDelete} errors={errors} />
     </div>
   );
 };

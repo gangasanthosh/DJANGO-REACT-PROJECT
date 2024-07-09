@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import '../App.css';
 import Footer from '../components/Footer';
+import Jobcards from '../components/HomeJobcards';
 import JobSearch from '../components/JobSearch';
 import JsNavbar from '../components/JsNavbar';
 import Navbar from '../components/Navbar';
@@ -25,6 +26,7 @@ const SearchFilterLayout = () => {
         <div className="web-app">
         {isAuthenticated ? <NavbarSignedIn /> : <Navbar />}
         <JobSearch/>
+        <Jobcards/>
         <Footer/>
         </div>
         )

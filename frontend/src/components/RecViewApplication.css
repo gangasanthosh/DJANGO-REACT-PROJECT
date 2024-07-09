@@ -1,0 +1,29 @@
+/* styles.css */
+
+.application-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.application-table th, .application-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.application-table th {
+    background-color: #f0f0f0;
+}
+
+.save-button {
+    background-color: #8436a8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background-color: #5d0a87;
+}

@@ -1,4 +1,4 @@
-#from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -21,6 +21,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.middleware.csrf import get_token
 import logging
 from django.core.files.storage import FileSystemStorage
+from rest_framework.decorators import action
 
 
 class usertableViewSet(viewsets.ModelViewSet):
@@ -46,10 +47,47 @@ class jobViewSet(viewsets.ModelViewSet):
         if max_likes:
             queryset = queryset.order_by('-like_count')[:int(max_likes)]
         return queryset
+    
 
+from django.core.mail import send_mail
 class applicationViewSet(viewsets.ModelViewSet):
     queryset = application.objects.all()
     serializer_class = applicationSerializer
+
+    @action(detail=True, methods=['patch'])
+    def update_status(self, request, pk=None):
+        try:
+            application = self.get_object()
+            new_status = request.data.get('status')
+            application.status = new_status
+            application.save()
+            serializer = self.get_serializer(application)
+            
+            if new_status == 'Rejected':
+                self.send_rejection_email(application)
+
+            if new_status == 'Hired':
+                self.send_accepting_email(application)
+
+            return Response(serializer.data)
+        except application.DoesNotExist:
+            return Response({'error': 'Application not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def send_rejection_email(self, application):
+        subject = 'Application Status Update'
+        message = f'Dear Applicant,\n\nWe regret to inform you that your application for {application.job.job_title} has been rejected.\n\nBest regards,\nJobStack'
+        recipient_list = [application.email]
+        send_mail(subject, message, 'your_email@example.com', recipient_list)
+
+    def send_accepting_email(self,application):
+        subject = 'Application Status Update'
+        message= f'Dear Applicant,\n\nCongragulations!,\nyou are hired for the position {application.job.job_title}.\n\nIt might take some time to get the confirmation from the recruiter side.\nPlease be sure to keep an eye on your email for updates.\n\nBest regards,\nJobStack'
+        recipient_list = [application.email]
+        send_mail(subject, message, 'your_email@example.com', recipient_list)
+
+
 
 class companyViewSet(viewsets.ModelViewSet):
     queryset = company.objects.all()
@@ -186,12 +224,21 @@ def check_login_status(request):
 
 
 """to store resume and application"""
+import os
+from django.core.files.storage import FileSystemStorage
+from django.core.mail import send_mail
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+import logging
+
 logger = logging.getLogger(__name__)
 
-RESUMES_DIR = 'frontend/src/resume'        #relative path
+RESUMES_DIR = 'frontend/src/resume'  # Relative path
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated]) # Uncomment this when you have authentication in place
+@permission_classes([IsAuthenticated])  # Uncomment this when you have authentication in place
 def submit_application(request):
     job_id = request.data.get('job_id')
     email = request.data.get('email')
@@ -222,15 +269,37 @@ def submit_application(request):
             email=email,
             resume_path=resume_path,
             remarks=remarks,
-            status='applied'
+            status='Applied'
         )
         application_instance.save()
+
+        # Send email to the recruiter
+        job = application_instance.job
+        recruiter_email = job.recruiter.user.email
+        send_recruiter_email(job.job_title, recruiter_email, email)
+
+        # Send email to the jobseeker
+        send_jobseeker_email(email, job.job_title)
+
     except Exception as e:
         logger.error(f'Error saving application: {e}')
         return Response({'error': 'Error saving application.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     logger.info('Application submitted successfully.')
     return Response({'message': 'Application submitted successfully.'}, status=status.HTTP_201_CREATED)
+
+def send_recruiter_email(job_title, recruiter_email, applicant_email):
+    subject = 'New Application Recorded'
+    message = f'Dear Recruiter,\n\nA new application has been submitted for the position of {job_title}.\n\nApplicant Email: {applicant_email}.\n\nLogin into your account to see the application and start hiring. \n\n\nRegards,\nJobStack'
+    send_mail(subject, message, 'noreplyjobstack@gmail.com', [recruiter_email])
+
+def send_jobseeker_email(jobseeker_email, job_title):
+    subject = 'A New Application Received'
+    message = f'Dear Applicant,\n\nYour application for the position of {job_title} has been recorded.\n\nBest regards,\nJobStack'
+    send_mail(subject, message, 'noreplyjobstack@gmail.com', [jobseeker_email])
+
+
+
 
 
 
@@ -269,58 +338,147 @@ def get_user_id(request):
 
 """fetch user id in jobseeker table using for profile setup"""
 def get_jobseeker_id(request):
-    user_id = request.GET.get('user_id')
+    email = request.GET.get('email')
+    if not email:
+        return JsonResponse({'error': 'Email parameter is missing'}, status=400)
     try:
-        jobseeker = jobseeker.objects.get(user_id=user_id)
-        return JsonResponse({'jobseekerId': jobseeker.id})
+        user = usertable.objects.get(email=email)
+        js = jobseeker.objects.get(user=user)
+        return JsonResponse({'jobseekerId': js.id})
+    except usertable.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
     except jobseeker.DoesNotExist:
-        return JsonResponse({'error': 'JobSeeker not found'}, status=404)
+        return JsonResponse({'error': 'Jobseeker not found'}, status=404)
+
+    
     
 
 
-"""personal info setup for profile setup"""
-@api_view(['PUT'])
-def update_personal_info(request, pk):
-    try:
-        job_seeker = jobseeker.objects.get(id=pk)
-    except jobseeker.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = jobseekerSerializer(job_seeker, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-"""education info setup for profile setup"""
-@api_view(['PUT'])
-def update_education(request, pk):
-    try:
-        education_instance = education.objects.get(job_seeker=pk)
-    except education.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = educationSerializer(education_instance, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-"""experience info setup for profile setup"""
-@api_view(['PUT'])
-def update_experience(request, pk):
-    try:
-        experience_instance = experience.objects.get(job_seeker=pk)
-    except experience.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = experienceSerializer(experience_instance, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+
+
+
+# """personal info setup for profile setup"""
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+
+@csrf_exempt
+def save_jobseeker(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user = usertable.objects.get(id=data['user'])
+            
+            # Ensure fresher value is 'Y' or 'N'
+            fresher = 'Y' if data.get('isFresher', False) else 'N'
+
+            js, created = jobseeker.objects.update_or_create(
+                user=user,
+            
+                defaults={
+                    'name': data.get('firstName', ''),
+                    'lname': data.get('lastName', ''),
+                    'contact_no': data.get('contactNumber', ''),
+                    'location': data.get('location', ''),
+                    'description': data.get('description', ''),
+                    'fresher': fresher,
+                    'gender': data.get('gender', ''),
+                    'dob': data.get('dob', None)
+                }
+            )
+            return JsonResponse({'message': 'Jobseeker saved successfully', 'jobseekerId': js.id})
+        except KeyError as e:
+            return JsonResponse({'error': f'Missing field: {e}'}, status=400)
+        except usertable.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)  # Catch all other exceptions
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+@csrf_exempt
+def save_education(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            js = jobseeker.objects.get(id=data['job_seeker'])
+
+            edu, created = education.objects.update_or_create(
+                job_seeker=js,
+                defaults={
+                    'education_level': data.get('educationLevel', ''),
+                    'field_of_study': data.get('fieldOfStudy', ''),
+                    'status': data.get('status', ''),
+                    'institution': data.get('institution', ''),
+                    'start_date': data.get('startDate', None),
+                    'end_date': data.get('endDate', None),
+                    'grade': data.get('grade', '')
+                }
+            )
+            return JsonResponse({'message': 'Education saved successfully', 'educationId': edu.id})
+        except KeyError as e:
+            return JsonResponse({'error': f'Missing field: {e}'}, status=400)
+        except jobseeker.DoesNotExist:
+            return JsonResponse({'error': 'JobSeeker not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+@csrf_exempt
+def save_experience(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            js = jobseeker.objects.get(id=data['job_seeker'])
+
+            exp, created = experience.objects.update_or_create(
+                job_seeker=js,
+                defaults={
+                    'job_title': data.get('jobTitle', ''),
+                    'company': data.get('company', ''),
+                    'location': data.get('location', ''),
+                    'start_date': data.get('startDate', None),
+                    'end_date': data.get('endDate', None),
+                    'responsibilities': data.get('responsibilities', ''),
+                    'description': data.get('description', '')
+                }
+            )
+            return JsonResponse({'message': 'Experience saved successfully', 'experienceId': exp.id})
+        except KeyError as e:
+            return JsonResponse({'error': f'Missing field: {e}'}, status=400)
+        except jobseeker.DoesNotExist:
+            return JsonResponse({'error': 'JobSeeker not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -386,6 +544,11 @@ def create_job(request):
 
 from rest_framework import generics
 
+
+
+
+
+
 """jobs posted by user"""
 class JobsByUserAPIView(generics.ListAPIView):
     serializer_class = jobSerializer
@@ -397,7 +560,10 @@ class JobsByUserAPIView(generics.ListAPIView):
         return job.objects.none()
     
 
-    """to display applications for a particular job"""
+
+
+
+"""to display applications for a particular job"""
 
 class ApplicationsByJobAPIView(generics.ListAPIView):
     serializer_class = applicationSerializer
@@ -405,3 +571,36 @@ class ApplicationsByJobAPIView(generics.ListAPIView):
     def get_queryset(self):
         job_id = self.kwargs['job_id']  # Assuming job_id is passed in URL
         return application.objects.filter(job_id=job_id)
+    
+
+
+
+
+
+
+@api_view(['POST'])
+def save_recruiter(request):
+    try:
+        recruiter_id = request.data.get('id')
+        rec = recruiter.objects.get(id=recruiter_id)
+        serializer = recruiterSerializer(instance=rec, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except recruiter.DoesNotExist:
+        return Response({'error': 'Recruiter not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def save_company(request):
+    serializer = companySerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+

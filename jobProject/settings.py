@@ -314,3 +314,13 @@ CORS_ALLOW_CREDENTIALS = True
 #     'http://localhost:5173',
 # ]
 AUTH_USER_MODEL= 'auth.User'
+
+
+EMAIL_BACKEND = 'jobApp.custom_email_backend.CustomEmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'noreplyjobstack@gmail.com'
+EMAIL_HOST_PASSWORD = 'myyg xkew ohhc rowm'
+

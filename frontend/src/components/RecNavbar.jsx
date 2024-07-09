@@ -85,8 +85,8 @@ const JsNavbar = () => {
             className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2"
             ref={dropdownRef}
           >
-            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="#">Settings</a></li>
-            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/profilesetup">Profile</a></li>
+            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/recprofile">Settings</a></li>
+            {/* <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/recprofile">Profile</a></li> */}
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Sign Out</li>
           </ul>
         )}
@@ -111,8 +111,8 @@ const JsNavbar = () => {
             {isDropdownVisible && (
               <div className="profile-dropdown-mobile">
                 <ul>
-                  <li><a href="/settings">Settings</a></li>
-                  <li><a href="/profile">Profile</a></li>
+                  <li><a href="/recprofile">Settings</a></li>
+                  {/* <li><a href="/recprofile">Profile</a></li> */}
                   <li onClick={handleLogout}>Sign Out</li>
                 </ul>
               </div>

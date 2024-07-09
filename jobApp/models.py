@@ -26,7 +26,7 @@ class usertable(models.Model):
     
 class recruiter(models.Model):
     user = models.OneToOneField(usertable, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
     lname=models.CharField(max_length=255, null=True)
     contact_no = models.CharField(max_length=20, blank=True, null=True)
     industry = models.CharField(max_length=100, blank=True, null=True)
@@ -35,7 +35,7 @@ class recruiter(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
 
 
     def __str__(self):
@@ -48,12 +48,13 @@ class jobseeker(models.Model):
     contact_no = models.CharField(max_length=20, blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    fresher = models.CharField(max_length=1, choices=[('Y', 'Yes'), ('N', 'No')])
+    fresher = models.CharField(max_length=10, choices=[('Y', 'Yes'), ('N', 'No')])
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    dob=models.DateField(blank=True, null=True)
 
 
     def __str__(self):
@@ -89,7 +90,7 @@ class education(models.Model):
         return f'{self.education_level} - {self.institution}'
     
 class company(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,)
     industry = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     phn_no = models.CharField(max_length=20, blank=True, null=True)

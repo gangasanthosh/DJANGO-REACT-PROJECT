@@ -12,6 +12,7 @@ import JobSearchLayout from '../layouts/JobSearchLayout';
 import JobViewLayout from '../layouts/JobViewLayout';
 import PostJobFormLayout from '../layouts/PostJobFormLayout';
 import ProfileSetupForm from '../layouts/ProfileFormLayout';
+import RecProfileFormLayout from '../layouts/RecProfileFormLayout';
 import ViewApplicationLayout from '../layouts/ViewApplicationLayout';
 import ProtectedRoute from './ProtectedRouter';
 
@@ -35,6 +36,7 @@ const MainRoutes = () => {
       <Route path='/postjob' element={<ProtectedRoute><PostJobFormLayout/></ProtectedRoute>}/>
       <Route path='/jobsposted' element={<ProtectedRoute><JobPostedLayout/></ProtectedRoute>}/>
       <Route path='/view-application/:jobId' element={<ProtectedRoute><ViewApplicationLayout/></ProtectedRoute>}/>
+      <Route path='/recprofile' element={<ProtectedRoute><RecProfileFormLayout/></ProtectedRoute>}/>
 
     </Routes>
   );

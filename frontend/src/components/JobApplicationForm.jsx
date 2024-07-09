@@ -125,6 +125,7 @@ const JsApplicationForm = () => {
                         <div className="mt-3 d-flex justify-content-center">
                             <div className="text-center">
                                 <p className="font-weight-bold">CV Preview:</p>
+                                <object data={cvPreviewUrl} type="application/pdf" width="100%" height="600"></object>
                                 <img src={cvPreviewUrl} alt="CV Preview" className="img-fluid" style={{ maxWidth: '250px' }} />
                             </div>
                         </div>

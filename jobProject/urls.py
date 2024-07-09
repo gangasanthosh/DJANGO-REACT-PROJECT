@@ -15,11 +15,14 @@ from jobApp.views import submit_application
 from jobApp.views import CompanySearchView
 from jobApp.views import get_userdetails
 from jobApp.views import applicationstatus
-from jobApp.views import update_personal_info, update_education, update_experience
 from jobApp.views import get_user_id, get_jobseeker_id
 from jobApp.views import get_recruiter_by_email, get_company_by_recruiter_id,create_job
 from jobApp.views import JobsByUserAPIView
 from jobApp.views import ApplicationsByJobAPIView
+from jobApp.views import save_jobseeker, save_education, save_experience
+
+from jobApp.views import save_recruiter, save_company
+
 
 
 
@@ -50,18 +53,25 @@ urlpatterns = [
     path('api/get_userdetails/', get_userdetails, name='get_userdetails'),
     path('api/applications/<str:email>/', applicationstatus.as_view(), name='application-list'),
     path('api/job/<int:id>/',JobDetailView.as_view(),name='job-detail'),
+
     path('api/get-user-id', get_user_id, name='get-user-id'),
-    path('api/get-jobseeker-id', get_jobseeker_id, name='get-jobseeker-id'),
-    path('update/personal-info/<int:pk>/', update_personal_info, name='update_personal_info'),
-    path('update/education/<int:pk>/', update_education, name='update_education'),
-    path('update/experience/<int:pk>/', update_experience, name='update_experience'),
+
+    path('api/jobseekerid', get_jobseeker_id, name='get_jobseeker_id'),
+
+    path('api/save_jobseeker', save_jobseeker, name='save_jobseeker'),
+    path('api/save_education', save_education, name='save_education'),
+    path('api/save_experience', save_experience, name='save_experience'),
+
+
     path('api/recruiters', get_recruiter_by_email,name='get_recruiter_by_email'),
     path('api/companies', get_company_by_recruiter_id,name='get_company_by_recruiter_id'),
     path('api/jobs', create_job,name='create_job'),
     path('api/jobsbyuser', JobsByUserAPIView.as_view(), name='jobs_by_user'),
     path('api/applications/job/<int:job_id>', ApplicationsByJobAPIView.as_view(), name='job-applications'),
 
-    
+    path('api/save_recruiter/', save_recruiter, name='save_recruiter'),
+    path('api/save_company/', save_company, name='save_company'),
+
 ]
 
 
