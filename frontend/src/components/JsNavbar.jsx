@@ -64,7 +64,7 @@ const JsNavbar = () => {
   return (
     <div className="navbar">
       <div className="nav-logo">
-        <h1 className="logo-text"><b>JobStack</b></h1>
+        <h1 className="logo-text"><b><a href='/'>JobStack</a></b></h1>
       </div>
       <div className="nav-items">
         <ul>
@@ -86,9 +86,10 @@ const JsNavbar = () => {
           <ul
             className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2"
             ref={dropdownRef}
+            style={{ zIndex: 1000 }}
           >
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/profilesetup">Settings</a></li>
-            {/* <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/profilesetup">Profile</a></li> */}
+            <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer"><a href="/jsinsight">Insights</a></li>
             <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Sign Out</li>
           </ul>
         )}
@@ -115,7 +116,7 @@ const JsNavbar = () => {
               <div className="profile-dropdown-mobile">
                 <ul>
                   <li><a href="/profilesetup">Settings</a></li>
-                  {/* <li><a href="/profile">Profile</a></li> */}
+                  <li><a href="/jsinsight">Insights</a></li>
                   <li onClick={handleLogout}>Sign Out</li>
                 </ul>
               </div>

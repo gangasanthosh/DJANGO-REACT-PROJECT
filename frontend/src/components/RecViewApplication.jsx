@@ -1,10 +1,8 @@
 
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../help/axios';
 import './RecViewApplication.css';
-
 
 const RecViewApplication = () => {
     const { jobId } = useParams();
@@ -12,7 +10,6 @@ const RecViewApplication = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [updatedApplications, setUpdatedApplications] = useState([]);
-
 
     const fetchApplications = async () => {
         try {
@@ -34,7 +31,6 @@ const RecViewApplication = () => {
     useEffect(() => {
         fetchApplications();
     }, [jobId]);
-
 
     const handleStatusChange = (applicationId, newStatus) => {
         const updatedApps = applications.map(app => {
@@ -72,11 +68,10 @@ const RecViewApplication = () => {
 
     return (
         <div>
-            <h2>Applications for Job ID: {jobId}</h2>
+            <h2 className='mt-3 mb-3'><b>Applications</b></h2>
             <table className="application-table">
                 <thead>
                     <tr>
-                        <th>Job Seeker Name</th>
                         <th>Remarks</th>
                         <th>Status</th>
                         <th>Applied Date</th>
@@ -87,7 +82,6 @@ const RecViewApplication = () => {
                     {applications.length > 0 ? (
                         applications.map(application => (
                             <tr key={application.id}>
-                                <td>{application.jobseeker_name}</td>
                                 <td>{application.remarks}</td>
                                 <td>
                                     <select
@@ -106,12 +100,12 @@ const RecViewApplication = () => {
                                     </select>
                                 </td>
                                 <td>{application.applied_date}</td>
-                                <td><a href={application.resume_path} target="_blank" rel="noopener noreferrer">View Resume</a></td>
+                                <td><a href={`http://127.0.0.1:8000${application.resume_path}`} target="_blank" rel="noopener noreferrer">View Resume</a></td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5">No applications found</td>
+                            <td colSpan="4">No applications found</td>
                         </tr>
                     )}
                 </tbody>

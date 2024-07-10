@@ -1,10 +1,10 @@
-/* General page styling */
+
 .page-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensure full height */
+    min-height: 100vh;
     padding: 20px;
     text-align: center;
 }
@@ -22,7 +22,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 250px; /* Adjust the width as needed */
+    width: 250px; 
     object-fit: cover;
 }
 
@@ -34,24 +34,24 @@
     right: 0;
 }
 
-/* Specific section styling */
+
 .content-space-1 {
     padding: 20px;
     border-radius: 8px;
-    max-width: 1200px; /* Constrain the width for larger screens */
+    max-width: 1200px; 
     width: 100%;
 }
 
-/* Form control and select elements styling */
+
 #openRolesSection .form-control,
 #openRolesSection .form-select,
 #openRolesSection .input-group-text {
-    font-size: 1rem; /* Adjust this size as needed */
+    font-size: 1rem; 
 }
 
-/* Additional styling */
-body { 
-    margin-top: 20px; 
+
+body {
+    margin-top: 20px;
 }
 .shadow {
     box-shadow: 0 0 3px rgb(134 54 168 / 20%) !important;
@@ -128,7 +128,7 @@ a {
     text-decoration: underline !important;
 }
 .card {
-    height: 100%; /* Ensure all cards have the same height */
+    height: 100%;
 }
 .card .card-body {
     display: flex;
@@ -136,17 +136,17 @@ a {
     justify-content: space-between;
 }
 .card .btn-primary {
-    margin-top: auto; /* Push the button to the bottom of the card */
+    margin-top: auto; 
 }
 .job-title {
-    font-size: 24px; /* Increase the font size of job title */
-    font-weight: bold; /* Make the job title bold */
+    font-size: 24px; 
+    font-weight: bold; 
 }
 .section-title .title {
-    font-size: 3rem; /* Larger size for the h1 element */
+    font-size: 3rem;
 }
 .section-title .para-desc {
-    font-size: 1.5rem; /* Larger size for the h3 element */
+    font-size: 1.5rem; 
 }
 .search-results {
     margin-top: 20px;
@@ -159,57 +159,82 @@ a {
     margin-bottom: 20px;
 }
 
-/* Responsive adjustments */
 
-/* Large screens */
+
+
+/* responsive adjustments */
+
+
 @media (min-width: 1200px) {
     .content-space-1 {
-        max-width: 1200px; /* Constrain the width */
-        margin: 0 auto; /* Center content */
+        max-width: 1200px;
+        margin: 0 auto;
     }
 } 
 
 /* Medium screens */
 @media (max-width: 1199.98px) {
     .job-title {
-        font-size: 1.5rem; /* Slightly smaller on medium screens */
+        font-size: 1.5rem;
     }
 }
 
-/* Small screens */
+
 @media (max-width: 992px) {
     .job-title {
-        font-size: 1.2rem; /* Smaller on small screens */
+        font-size: 1.2rem;
     }
     .section-title .title {
-        font-size: 2.5rem; /* Adjust title size on smaller screens */
+        font-size: 2.5rem;
     }
     .section-title .para-desc {
-        font-size: 1.2rem; /* Adjust description size on smaller screens */
+        font-size: 1.2rem;
     }
     .search-results .col-lg-4 {
-        flex: 0 0 50%; /* 2 cards per row on medium screens */
+        flex: 0 0 50%;
         max-width: 50%;
     }
 }
 
-/* Extra small screens */
+
 @media (max-width: 768px) {
     .job-title {
-        font-size: 1rem; /* Smaller on extra small screens */
+        font-size: 1rem;
     }
     .search-results .col-lg-4 {
-        flex: 0 0 100%; /* 1 card per row on small screens */
+        flex: 0 0 100%; 
         max-width: 100%;
     }
     .page-container {
-        height: auto; /* Remove fixed height on small screens */
+        height: auto; 
     }
 }
 
-/* Very small screens */
+
 @media (max-width: 576px) {
     .job-title {
-        font-size: 0.9rem; /* Adjust font size for very small screens */
+        font-size: 0.9rem; 
     }
 }
+
+
+
+.like-button {
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .like-button.liked {
+    color: rgb(136, 52, 181);
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+  }
+  

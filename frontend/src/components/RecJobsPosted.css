@@ -1,37 +1,43 @@
 .jobs-container {
     margin: 20px;
     padding: 20px;
+
+}
+
+.jobs-container h1 {
+    font-size: 2em;
+    font-family: 'roboto',sans-serif;
+    font-weight: bold;
+    color: #450068;
+    margin-bottom: 30px;
 }
 
 .job-list {
     list-style-type: none;
     padding: 0;
+
 }
 
 .job-item {
     position: relative;
-    margin-bottom: 10px;
-    padding: 10px;
+    margin-bottom: 30px;
+    padding: 25px;
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .job-title {
     font-size: 1.2em;
     font-weight: bold;
     text-align: left;
+    color: #8436a8;
 }
 
 .job-details {
     margin-top: 5px;
     color: #666;
     text-align: left;
-}
-
-.job-description {
-    white-space: pre-line;
 }
 
 .button-container {
@@ -55,7 +61,7 @@
 }
 
 .delete-button {
-    background-color: #dc3545; /* Red color for delete button */
+    background-color: #dc3545;
     color: #fff;
     border: none;
     padding: 6px 12px;
@@ -65,5 +71,25 @@
 }
 
 .delete-button:hover {
-    background-color: #c82333; /* Darker red on hover */
+    background-color: #c82333;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination button {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #ddd;
 }

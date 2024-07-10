@@ -26,7 +26,7 @@ const Signin = () => {
   };
 
   const validatePassword = (password) => {
-    return password.length >= 6;
+    return password.length >= 8;
   };
 
   const handleLogin = async (e) => {

@@ -1,6 +1,4 @@
 
-
-// reducers/jobReducer.js
 const initialState = {
     jobs: [],
     loading: false,

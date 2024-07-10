@@ -224,21 +224,20 @@ def check_login_status(request):
 
 
 """to store resume and application"""
-import os
 from django.core.files.storage import FileSystemStorage
-from django.core.mail import send_mail
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+import os
 import logging
+from django.conf import settings
+
 
 logger = logging.getLogger(__name__)
 
-RESUMES_DIR = 'frontend/src/resume'  # Relative path
-
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])  # Uncomment this when you have authentication in place
+@permission_classes([IsAuthenticated])
 def submit_application(request):
     job_id = request.data.get('job_id')
     email = request.data.get('email')
@@ -247,23 +246,20 @@ def submit_application(request):
 
     logger.info(f'Received data - job_id: {job_id}, email: {email}, remarks: {remarks}, resume: {resume}')
 
-    # Check for missing required fields
     if not remarks or not resume:
         logger.error('Missing required fields.')
         return Response({'error': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # Ensure the resumes directory exists
-        os.makedirs(RESUMES_DIR, exist_ok=True)
-        fs = FileSystemStorage(location=RESUMES_DIR)
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
         resume_name = fs.save(resume.name, resume)
-        resume_path = fs.path(resume_name)
+        resume_path = fs.url(resume_name)
     except Exception as e:
         logger.error(f'Error saving resume: {e}')
         return Response({'error': 'Error saving resume.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
-        # Save the application instance
+        # Save the application
         application_instance = application(
             job_id=job_id,
             email=email,
@@ -273,12 +269,11 @@ def submit_application(request):
         )
         application_instance.save()
 
-        # Send email to the recruiter
+        #email
         job = application_instance.job
         recruiter_email = job.recruiter.user.email
         send_recruiter_email(job.job_title, recruiter_email, email)
 
-        # Send email to the jobseeker
         send_jobseeker_email(email, job.job_title)
 
     except Exception as e:
@@ -295,12 +290,8 @@ def send_recruiter_email(job_title, recruiter_email, applicant_email):
 
 def send_jobseeker_email(jobseeker_email, job_title):
     subject = 'A New Application Received'
-    message = f'Dear Applicant,\n\nYour application for the position of {job_title} has been recorded.\n\nBest regards,\nJobStack'
+    message = f'Dear Applicant,\n\nYour application for the position of {job_title} has been recorded.\n\nAll the very best!\n\nRegards,\nJobStack'
     send_mail(subject, message, 'noreplyjobstack@gmail.com', [jobseeker_email])
-
-
-
-
 
 
 """to fetch userdetails"""
@@ -318,7 +309,7 @@ def get_userdetails(request):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
 
-"""to view application status gotta edit it job id is visible"""
+"""to view application status gotta edit it; job id is visible"""
 class applicationstatus(APIView):
     def get(self, request, email):
         applications = application.objects.filter(email=email)
@@ -350,26 +341,9 @@ def get_jobseeker_id(request):
     except jobseeker.DoesNotExist:
         return JsonResponse({'error': 'Jobseeker not found'}, status=404)
 
-    
-    
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# """personal info setup for profile setup"""
+"""JS personal info setup for profile setup"""
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
@@ -469,18 +443,7 @@ def save_experience(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+#-------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -549,7 +512,7 @@ from rest_framework import generics
 
 
 
-"""jobs posted by user"""
+"""jobs posted by rec"""
 class JobsByUserAPIView(generics.ListAPIView):
     serializer_class = jobSerializer
 
@@ -569,15 +532,12 @@ class ApplicationsByJobAPIView(generics.ListAPIView):
     serializer_class = applicationSerializer
 
     def get_queryset(self):
-        job_id = self.kwargs['job_id']  # Assuming job_id is passed in URL
+        job_id = self.kwargs['job_id']
         return application.objects.filter(job_id=job_id)
     
 
 
-
-
-
-
+"""rec profile form"""
 @api_view(['POST'])
 def save_recruiter(request):
     try:

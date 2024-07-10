@@ -58,9 +58,13 @@ class jobSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class applicationSerializer(serializers.ModelSerializer):
+    job = jobSerializer()
+    # jobseeker = jobseekerSerializer()
+
     class Meta:
         model = application
-        fields = '__all__'
+        fields = ['id', 'job', 'email', 'resume_path', 'remarks', 'status', 'applied_date']
+
 
 class educationSerializer(serializers.ModelSerializer):
     class Meta:

@@ -4,7 +4,7 @@
     }
 
 
-    ody {
+    body {
     font-family: 'Roboto', sans-serif;
     padding: 0px;
     margin: 0px;
@@ -64,3 +64,5 @@
     overflow: hidden;
     cursor: pointer;
     }
+
+    

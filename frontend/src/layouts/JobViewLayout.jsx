@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import JobView from '../components/JobView';
 import JsNavbar from '../components/JsNavbar';
 import Navbar from '../components/Navbar';
+import RecJobView from '../components/RecJobView';
 import RecNavbar from '../components/RecNavbar';
 
 
@@ -21,10 +22,11 @@ const NavbarSignedIn = () => {
 const ViewApplyLayout = () => {
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const userType = useSelector((state) => state.auth.userType);
   return (
     <div>
         {isAuthenticated ? <NavbarSignedIn /> : <Navbar />}
-        <JobView/>
+        {userType === 'recruiter' ? <RecJobView/> : <JobView />}
         <Footer/>
     </div>
   );

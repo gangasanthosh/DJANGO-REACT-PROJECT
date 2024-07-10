@@ -2,12 +2,14 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from '../help/axios';
-import './RecJobsPosted.css'; // Import your CSS file
+import './RecJobsPosted.css';
 
 const RecJobsPosted = () => {
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const perPage = 3;
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -37,15 +39,21 @@ const RecJobsPosted = () => {
 
     const handleDeleteJob = async (jobId) => {
         try {
-            // Assuming you have an API endpoint for deleting jobs
             await axios.delete(`http://127.0.0.1:8000/api/job/${jobId}`);
-            // Update state to remove the deleted job from the list
             setJobs(jobs.filter(job => job.id !== jobId));
             console.log(`Job ${jobId} deleted successfully.`);
         } catch (error) {
             console.error('Error deleting job:', error);
-            // Handle error state if needed
         }
+    };
+
+    const totalPages = Math.ceil(jobs.length / perPage);
+    const indexOfLastJob = currentPage * perPage;
+    const indexOfFirstJob = indexOfLastJob - perPage;
+    const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
 
     if (loading) {
@@ -58,34 +66,38 @@ const RecJobsPosted = () => {
 
     return (
         <div className="jobs-container">
-            <h2>Jobs Posted by You</h2>
-            <ul className="job-list">
-                {jobs.length > 0 ? (
-                    jobs.map(job => (
-                        <li key={job.id} className="job-item">
-                            <div>
-                                <div className="job-title">{job.job_title}</div>
-                                <div className="job-details">
-                                    <p><strong>Industry:</strong> {job.industry}</p>
-                                    <p><strong>Location:</strong> {job.location}</p>
-                                    <p><strong>Posted:</strong> {job.jobpost_date}</p>
-                                    <p><strong>Last Date:</strong> {job.last_date}</p>
-                                    <p><strong>Employment Type:</strong> {job.employment_type}</p>
-                                    <div className="job-description">
-                                        <p><strong>Description:</strong> {job.job_description}</p>
+            <h1>Jobs Posted by You</h1>
+            <div className='mt-3 mb-3'>
+                <ul className="job-list">
+                    {currentJobs.length > 0 ? (
+                        currentJobs.map(job => (
+                            <li key={job.id} className="job-item">
+                                <div>
+                                    <div className="job-title">{job.job_title}</div>
+                                    <div className="job-details">
+                                        <p><strong>Location:</strong> {job.location}</p>
+                                        <p><strong>Posted on:</strong> {job.jobpost_date}</p>
+                                        <p><strong>Employment Type:</strong> {job.employment_type}</p>
+                                    </div>
+                                    <div className="button-container">
+                                        <Link to={`/viewjob/${job.id}`} className="view-button">View details</Link>
+                                        <Link to={`/recinsight/${job.id}`} className="view-button">View Insight</Link>
+                                        <Link to={`/view-application/${job.id}`} className="view-button">View Application</Link>
+                                        <button className="delete-button" onClick={() => handleDeleteJob(job.id)}>Delete</button>
                                     </div>
                                 </div>
-                                <div className="button-container">
-                                    <Link to={`/view-application/${job.id}`} className="view-button">View Application</Link>
-                                    <button className="delete-button" onClick={() => handleDeleteJob(job.id)}>Delete</button>
-                                </div>
-                            </div>
-                        </li>
-                    ))
-                ) : (
-                    <li>No jobs found</li>
-                )}
-            </ul>
+                            </li>
+                        ))
+                    ) : (
+                        <li>No jobs found</li>
+                    )}
+                </ul>
+                <div className="pagination">
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button key={index + 1} onClick={() => handlePageChange(index + 1)}>{index + 1}</button>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };

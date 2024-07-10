@@ -24,6 +24,10 @@ from jobApp.views import save_jobseeker, save_education, save_experience
 from jobApp.views import save_recruiter, save_company
 
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 
 
 router = DefaultRouter()
@@ -72,7 +76,7 @@ urlpatterns = [
     path('api/save_recruiter/', save_recruiter, name='save_recruiter'),
     path('api/save_company/', save_company, name='save_company'),
 
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 
