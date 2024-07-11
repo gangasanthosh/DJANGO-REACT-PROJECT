@@ -1,10 +1,10 @@
-    import CanvasJSReact from '@canvasjs/react-charts';
+    // import CanvasJSReact from '@canvasjs/react-charts';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from '../help/axios';
 import './RecJobsPosted.css';
 
-    var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+    // var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
     const RecInsight = () => {
     const [statusCounts, setStatusCounts] = useState({});
@@ -74,7 +74,7 @@ import './RecJobsPosted.css';
 
     return (
         <div>
-        <CanvasJSChart options={options} />
+        {/* <CanvasJSChart options={options} /> */}
         <div className='button-container'>
         <Link to={`/view-application/${jobId}`} className="view-button">View Applications</Link>
         </div>

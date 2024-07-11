@@ -1,11 +1,11 @@
 
-import CanvasJSReact from '@canvasjs/react-charts';
+// import CanvasJSReact from '@canvasjs/react-charts';
 import Cookies from 'js-cookie';
 import React, { Component } from 'react';
 import axios from '../help/axios';
 
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+// var CanvasJS = CanvasJSReact.CanvasJS;
+// var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class App extends Component {
 	state = {
@@ -81,7 +81,7 @@ class App extends Component {
 
 		return (
 			<div>
-				<CanvasJSChart options={options} />
+				{/* <CanvasJSChart options={options} /> */}
 			</div>
 		);
 	}
